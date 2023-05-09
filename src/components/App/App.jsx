@@ -1,5 +1,5 @@
-import Task from '../Task/Task';
-import { Container } from './App.styled';
+// import Task from '../Task/Task';
+// import { Container } from './App.styled';
 import { Component } from 'react';
 import Filter from 'components/Filter/Filter';
 

@@ -50,21 +50,21 @@ export class TextField extends Component {
     icon: PropTypes.func,
   };
 
-  state = { wasCleared: true };
+  state = { isEmpty: true };
 
   handleClearInput = () => {
-    this.setState({ wasCleared: true });
+    this.setState({ isEmpty: true });
   };
 
-  handleChange = (...args) => {
-    if (this.state.wasCleared) this.setState({ wasCleared: false });
-    this.props.onChange(...args);
+  handleChange = (e, ...rest) => {
+    this.setState({ isEmpty: !e.target.value });
+    this.props.onChange(e, ...rest);
   };
 
   render() {
     const { handleChange, handleClearInput } = this;
     const { value, onChange, label, icon, ...restProps } = this.props;
-    const { wasCleared } = this.state;
+    const { isEmpty } = this.state;
 
     return (
       <Label {...restProps}>
@@ -75,11 +75,11 @@ export class TextField extends Component {
             autoComplete="off"
             placeholder={label}
             onChange={handleChange}
-            value={wasCleared ? '' : value}
+            value={isEmpty ? '' : value}
             {...restProps}
           />
           <LeftSideIcon icon={icon} />
-          <ClearInputBtn onClick={handleClearInput} hidden={wasCleared} />
+          <ClearInputBtn onClick={handleClearInput} hidden={isEmpty} />
         </Field>
       </Label>
     );
