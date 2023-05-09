@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import { Container, Title } from './Task.styled';
 
-export const Task = ({ title, children }) => (
-  <Container>
-    <Title>{title.replace('-', '—')}</Title>
-    {children}
-  </Container>
-);
+export default function Task({ title, children }) {
+  return (
+    <Container>
+      <Title>{title && title.replace('-', '—')}</Title>
+      {children}
+    </Container>
+  );
+}
 
 Task.propType = {
   title: PropTypes.string.isRequired,
