@@ -1,3 +1,5 @@
+export const isStr = v => typeof v === 'string';
+
 export const getRandomHexColor = () =>
   `#${Math.floor(Math.random() * 0xffffff)
     .toString(0x10)
@@ -12,3 +14,6 @@ export function formatNumber(v) {
 
   return String(v);
 }
+
+let id = 0;
+export const getId = () => `id-${(id++).toString(16)}`;

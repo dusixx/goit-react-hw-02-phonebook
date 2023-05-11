@@ -1,0 +1,9 @@
+:root {
+  --color-accent: #1c66ee;
+  --color-black: rgb(43, 43, 43);
+  --color-background: rgb(226, 226, 226);
+  --color-gray-lighter: #f1f1f1;
+  --box-shadow: 0 1px 1px 1px rgb(202, 202, 202);
+  --trans-func: ease;
+  --trans-duration: 250ms;
+}

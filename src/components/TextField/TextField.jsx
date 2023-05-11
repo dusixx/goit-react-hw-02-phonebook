@@ -1,42 +1,40 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { VscClose as IconClose } from 'react-icons/vsc';
+import { VscClose } from 'react-icons/vsc';
 
 import {
   Label,
   Field,
   Input,
   IconWrapper,
-  ClearInput,
+  ClearInputBtn,
 } from './TextField.styled';
 
-//
-// Left-side icon
-//
-
-const LeftSideIcon = ({ icon: Icon }) => {
+const Icon = ({ value: ReactIcon }) => {
   return (
-    Icon && (
+    ReactIcon && (
       <IconWrapper>
-        <Icon size="100%" />
+        <ReactIcon size="100%" />
       </IconWrapper>
     )
   );
 };
 
-//
-// Clear btn
-//
-
-const ClearInputBtn = ({ onClick, hidden }) => (
-  <ClearInput
+const ClearBtn = ({ onClick, hidden }) => (
+  <ClearInputBtn
     type="button"
     onClick={onClick}
-    style={{ visibility: hidden ? 'hidden' : 'visible' }}
+    // с visibility небольшая пауза
+    style={{ display: hidden ? 'none' : 'flex' }}
   >
-    <IconClose size="100%" />
-  </ClearInput>
+    <VscClose size="100%" />
+  </ClearInputBtn>
 );
+
+ClearBtn.propTypes = {
+  onClick: PropTypes.func,
+  hidden: PropTypes.bool.isRequired,
+};
 
 //
 // TextField
@@ -52,8 +50,9 @@ export class TextField extends Component {
 
   state = { isEmpty: true };
 
-  handleClearInput = () => {
+  handleClearInput = e => {
     this.setState({ isEmpty: true });
+    this.props.onChange(null);
   };
 
   handleChange = (e, ...rest) => {
@@ -69,7 +68,6 @@ export class TextField extends Component {
     return (
       <Label {...restProps}>
         <Field>
-          {/* text input */}
           <Input
             type="text"
             autoComplete="off"
@@ -78,8 +76,8 @@ export class TextField extends Component {
             value={isEmpty ? '' : value}
             {...restProps}
           />
-          <LeftSideIcon icon={icon} />
-          <ClearInputBtn onClick={handleClearInput} hidden={isEmpty} />
+          <Icon value={icon} />
+          <ClearBtn onClick={handleClearInput} hidden={isEmpty} />
         </Field>
       </Label>
     );
