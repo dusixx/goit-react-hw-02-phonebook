@@ -62,7 +62,9 @@ export class ListHeader extends Component {
           </th>
           <th>
             <HeaderControls>
-              <DeleteBtn type="button">Delete</DeleteBtn>
+              <DeleteBtn type="button" title="Remove selected">
+                Delete
+              </DeleteBtn>
             </HeaderControls>
           </th>
         </tr>

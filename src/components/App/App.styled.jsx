@@ -19,3 +19,11 @@ export const Header = styled.div`
     letter-spacing: -1px;
   }
 `;
+
+export const NoContacts = styled.p`
+  ${FlexCentered(`gap: 5px`)};
+
+  & svg {
+    color: var(--color-accent);
+  }
+`;

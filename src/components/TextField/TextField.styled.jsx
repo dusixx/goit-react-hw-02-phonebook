@@ -1,38 +1,58 @@
 import styled from '@emotion/styled';
-import { ButtonBase } from 'styles/shared';
+import { ButtonBase, FlexCentered } from 'styles/shared';
+import { isNum } from 'components/utils';
 
+//
 // params
+//
 
-const FIELD_HEIGHT_PX = 40;
-const ICON_SIZE = FIELD_HEIGHT_PX * 0.5;
-const CLEAR_INPUT_SIZE = FIELD_HEIGHT_PX * 0.5;
-const ICON_OFFSET = FIELD_HEIGHT_PX * 0.3;
-const FIELD_PADDING_LEFT = ICON_SIZE + ICON_OFFSET + 7;
-const FIELD_PADDING_RIGHT = CLEAR_INPUT_SIZE + ICON_OFFSET + 7;
-const ICON_COLOR = '#363636';
+const def = {
+  width: '100%',
+  height: '40px',
+  iconColor: '#363636',
+  validationColor: '#d93025',
+  borderColor: 'lightgray',
+  paddingSide: 12,
+};
 
+const calc = v => (isNum(v) ? `${v}px` : v);
+const fieldWidth = ({ width }) => width || def.width;
+const fieldHeight = ({ height }) => height || def.height;
+const fontSize = ({ inputHeight }) => `${inputHeight * 0.35}px`;
+
+const validationFontSize = ({ inputHeight }) =>
+  `${inputHeight * 0.35 * 0.83}px`;
+
+const borderRadius = ({ inputHeight }) => `${inputHeight * 0.2}px`;
+const iconHeight = ({ size }) => `${size ? calc(size) : '50%'}`;
+const iconOffset = ({ iconWidth }) => `${iconWidth * 0.5}px`;
+const clearBtnOffset = ({ inputHeight }) => `${inputHeight * 0.2}px`;
+
+const paddingLeft = ({ iconWidth }) =>
+  `${iconWidth ? iconWidth + iconWidth * 0.5 + 5 : def.paddingSide}px`;
+
+const paddingRight = ({ inputHeight }) =>
+  `${inputHeight ? inputHeight * 0.8 : def.paddingSide}px`;
+
+//
 // styles
+//
 
-export const Label = styled.label`
-  display: block;
-  /* margin-top: 10px; */
-
-  width: ${({ width }) => width || '100%'};
-  height: ${FIELD_HEIGHT_PX}px;
+export const Field = styled.label`
+  display: flex;
+  flex-direction: column;
+  width: ${fieldWidth};
+  /* height: ${fieldHeight}; */
 `;
 
-export const Field = styled.div`
+export const InputWrapper = styled.div`
   position: relative;
-  display: flex;
-  align-items: center;
+  ${FlexCentered(`justify-content: auto`)};
 
-  height: 100%;
+  height: ${fieldHeight};
+  /* height: 100%; */
   width: 100%;
-  color: ${ICON_COLOR};
-
-  /* &:focus-within {
-    color: var(--color-accent);
-  } */
+  color: ${def.iconColor};
 `;
 
 export const Input = styled.input`
@@ -40,37 +60,39 @@ export const Input = styled.input`
   width: 100%;
 
   padding: 0;
-  padding-left: ${FIELD_PADDING_LEFT}px;
-  padding-right: ${FIELD_PADDING_RIGHT}px;
+  padding-left: ${paddingLeft};
+  padding-right: ${paddingRight};
 
   font-family: inherit;
-  font-size: inherit;
+  font-size: ${fontSize};
 
   background-color: white;
-  /* border-radius: ${FIELD_HEIGHT_PX * 0.25}px; */
-  border: 1px solid transparent;
-  outline: none;
+  border-radius: ${borderRadius};
 
+  border: 1px solid
+    ${({ validationMsg }) =>
+      validationMsg ? def.validationColor : def.borderColor};
+
+  outline: none;
   transition-property: background-color;
 
-  &:focus-visible {
-    background-color: #ebf2ff;
-    /* box-shadow: var(--box-shadow); */
-    /* border-bottom: 1px solid var(--color-accent); */
+  &::placeholder {
+    opacity: 0.5;
+    text-transform: capitalize;
   }
 
-  /* border: 1px solid gray; */
+  &:focus-visible {
+    background-color: var(--color-accent-lighter);
+  }
 `;
 
 export const IconWrapper = styled.span`
+  ${FlexCentered()};
+
   position: absolute;
   top: 50%;
-  left: ${ICON_OFFSET}px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: ${ICON_SIZE}px;
+  left: ${iconOffset};
+  height: ${iconHeight};
 
   color: currentColor;
   transform: translateY(-50%);
@@ -79,11 +101,12 @@ export const IconWrapper = styled.span`
 export const ClearInputBtn = styled(ButtonBase)`
   position: absolute;
   top: 50%;
-  right: ${ICON_OFFSET}px;
+  right: ${clearBtnOffset};
 
-  height: ${CLEAR_INPUT_SIZE}px;
+  height: 60%;
+  padding: 3px;
+
   color: gray;
-
   transform: translateY(-50%);
   transition-property: color;
 
@@ -91,4 +114,13 @@ export const ClearInputBtn = styled(ButtonBase)`
   &:hover {
     color: var(--color-black);
   }
+`;
+
+export const ValidationMessage = styled.p`
+  margin-top: 2px;
+  margin-left: ${borderRadius};
+  letter-spacing: -0.2px;
+
+  color: ${({ color }) => color || def.validationColor};
+  font-size: ${validationFontSize};
 `;

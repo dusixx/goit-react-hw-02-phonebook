@@ -1,5 +1,12 @@
 @import-normalize; /* bring in normalize.css styles */
 
+*,
+::before,
+::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Arial, 'Segoe UI', Tahoma,

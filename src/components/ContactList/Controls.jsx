@@ -1,26 +1,27 @@
 import PropTypes from 'prop-types';
-import { getId } from 'components/utils';
-import { MdOutlineEdit, MdDeleteOutline } from 'react-icons/md';
+import { getId, cap } from 'components/utils';
 import { Container, Button } from './Controls.styled';
 
+import {
+  MdOutlineEdit as IconEdit,
+  MdDeleteOutline as IconDelete,
+  MdCopyAll as IconCopy,
+} from 'react-icons/md';
+
+// порядок контролов слева-направо
+// можно расширить, например, copy: {icon, size, ....}
 const data = {
-  edit: MdOutlineEdit,
-  remove: MdDeleteOutline,
+  copy: IconCopy,
+  edit: IconEdit,
+  delete: IconDelete,
 };
 
-export const Control = ({
-  icon: ReactIcon,
-  size,
-  name,
-  title,
-  onClick,
-  targetId,
-}) => (
+export const Control = ({ icon: ReactIcon, size, name, onClick, targetId }) => (
   <Button
     type="button"
     onClick={() => onClick(targetId, name)}
     name={name}
-    title={title}
+    title={cap(name)}
   >
     <ReactIcon size={size || '100%'} />
   </Button>
@@ -32,7 +33,6 @@ export const Controls = ({ controlsHeight, onControlClick, id }) => (
       <Control
         key={getId()}
         name={name}
-        title={name}
         icon={icon}
         targetId={id}
         onClick={onControlClick}

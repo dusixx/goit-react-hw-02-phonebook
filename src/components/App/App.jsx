@@ -1,16 +1,15 @@
 import { Component } from 'react';
-import { RiContactsBook2Fill } from 'react-icons/ri';
-import { BiSearch, BiUserPlus } from 'react-icons/bi';
-import { Block } from 'styles/shared';
+import { RiContactsBook2Fill, RiEmotionSadLine } from 'react-icons/ri';
+import { BiUserPlus } from 'react-icons/bi';
 import { ContactList } from 'components/ContactList/ContactList';
-import { TextField } from 'components/TextField/TextField';
-import { Container, Header } from './App.styled';
+import { Container, Header, NoContacts } from './App.styled';
 import { contacts as initialContacts } from '../../data/contacts';
-import { ButtonPrimary } from 'styles/shared';
+import { ButtonPrimary, Block } from 'styles/shared';
+import { ContactEditor } from 'components/ContactList/ContactEditor';
+import { Filter } from 'components/ContactList/Filter';
+import { getId } from 'components/utils';
 
-const Filter = props => (
-  <TextField icon={BiSearch} name="filter" label="Search" {...props} />
-);
+const MSG_NO_CONTACTS = "You don't have any contacts yet";
 
 //
 // App
@@ -18,17 +17,20 @@ const Filter = props => (
 
 export class App extends Component {
   state = {
+    showEditor: false,
+    editedIndex: -1,
     contacts: initialContacts,
     filter: '',
   };
 
   componentDidMount() {
+    // init
     this.handleListSort(null, 'name', true);
   }
 
   // e == null при клике на кнопку очистки
-  handleFilterChange = e => {
-    this.setState({ filter: e?.target.value || '' });
+  handleFilterChange = (e, { name }) => {
+    this.setState({ [name]: e?.target.value || '' });
   };
 
   filterContacts() {
@@ -45,58 +47,137 @@ export class App extends Component {
   }
 
   handleControlClick = (id, name) => {
-    if (name === 'remove') return this.removeContact(id);
-    if (name === 'edit') return this.editContact(id);
+    switch (name) {
+      case 'delete':
+        return this.handleRemoveContact(id);
+      case 'edit':
+        return this.handleEditContact(id);
+      case 'copy':
+        return this.handleCopyContact(id);
+      default:
+    }
   };
 
-  removeContact(id) {
+  handleRemoveContact(id) {
     this.setState({
       contacts: this.state.contacts.filter(itm => itm.id !== id),
     });
   }
 
-  editContact(id) {
-    return;
+  handleEditContact(id) {
+    const idx = this.state.contacts.findIndex(itm => itm.id === id);
+    this.setState({ editedIndex: idx, showEditor: true });
   }
 
-  handleListSort = (_, key, asc) => {
-    const comp = asc
-      ? (a, b) => a[key].localeCompare(b[key])
-      : (a, b) => b[key].localeCompare(a[key]);
+  handleCopyContact(id) {
+    const target = this.state.contacts.find(itm => itm.id === id);
+    target && navigator.clipboard.writeText(JSON.stringify(target));
+  }
 
-    this.setState({ contacts: this.state.contacts.sort(comp) });
+  handleListSort = (_, key, ascending) => {
+    this.setState({
+      contacts: this.state.contacts.sort(
+        ascending
+          ? (a, b) => a[key].localeCompare(b[key])
+          : (a, b) => b[key].localeCompare(a[key])
+      ),
+    });
+  };
+
+  handleAddContactClick = e => {
+    this.setState({ showEditor: true, editedIndex: -1 });
+  };
+
+  handleEditorClose = e => {
+    this.setState({ showEditor: false });
+  };
+
+  addContact(data) {
+    this.setState(cur => ({
+      contacts: [...cur.contacts, { ...data, id: getId() }],
+    }));
+  }
+
+  editContact(index, data) {
+    this.setState(cur => ({
+      contacts: cur.contacts.map((itm, idx) =>
+        idx === index ? { ...itm, ...data } : itm
+      ),
+    }));
+  }
+
+  handleEditorSubmit = (_, data) => {
+    const { editedIndex } = this.state;
+
+    if (editedIndex < 0) {
+      this.addContact(data);
+    } else {
+      this.editContact(editedIndex, data);
+    }
+
+    this.handleEditorClose();
   };
 
   render() {
+    const { contacts, filter, showEditor } = this.state;
+    const {
+      handleAddContactClick,
+      handleFilterChange,
+      handleControlClick,
+      handleListSort,
+      handleEditorClose,
+      handleEditorSubmit,
+    } = this;
+
     return (
       <Container width="50%">
+        {showEditor && (
+          <ContactEditor
+            title="Add contact"
+            onClose={handleEditorClose}
+            onSubmit={handleEditorSubmit}
+          />
+        )}
         <Header>
           <h1>
             <RiContactsBook2Fill size={22} color="var(--color-accent)" />
             PhoneBook
           </h1>
-          <ButtonPrimary type="button" name="addContact">
+          <ButtonPrimary
+            type="button"
+            name="addContact"
+            onClick={handleAddContactClick}
+          >
             <BiUserPlus size={20} />
             Add
           </ButtonPrimary>
         </Header>
-
-        <Block marginBottom="20px" marginTop="15px">
-          <Filter
-            value={this.state.filter}
-            onChange={this.handleFilterChange}
-          />
-        </Block>
-
-        <Block>
-          <ContactList
-            value={this.filterContacts()}
-            itemHeight="50px"
-            controlsHeight="20px"
-            onControlClick={this.handleControlClick}
-            onListSort={this.handleListSort}
-          />
-        </Block>
+        {!!contacts.length && (
+          <Block marginBottom="20px" marginTop="15px">
+            <Filter
+              value={filter}
+              onChange={handleFilterChange}
+              disabled={!contacts.length}
+            />
+          </Block>
+        )}
+        {!!contacts.length && (
+          <Block>
+            <ContactList
+              value={this.filterContacts()}
+              itemHeight="50px"
+              controlsHeight="20px"
+              onControlClick={handleControlClick}
+              onListSort={handleListSort}
+            />
+          </Block>
+        )}
+        {!contacts.length && (
+          <NoContacts>
+            {MSG_NO_CONTACTS}
+            <RiEmotionSadLine size={20} />
+          </NoContacts>
+        )}
       </Container>
     );
   }
