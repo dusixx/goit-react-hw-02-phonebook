@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ButtonBase, FlexCentered } from 'styles/shared';
-import { isNum } from 'components/utils';
+import { calcCSSValue } from 'components/utils';
 
 //
 // params
@@ -11,11 +11,10 @@ const def = {
   height: '40px',
   iconColor: '#363636',
   validationColor: '#d93025',
-  borderColor: 'lightgray',
+  borderColor: '#c4c4c4',
   paddingSide: 12,
 };
 
-const calc = v => (isNum(v) ? `${v}px` : v);
 const fieldWidth = ({ width }) => width || def.width;
 const fieldHeight = ({ height }) => height || def.height;
 const fontSize = ({ inputHeight }) => `${inputHeight * 0.35}px`;
@@ -24,7 +23,7 @@ const validationFontSize = ({ inputHeight }) =>
   `${inputHeight * 0.35 * 0.83}px`;
 
 const borderRadius = ({ inputHeight }) => `${inputHeight * 0.2}px`;
-const iconHeight = ({ size }) => `${size ? calc(size) : '50%'}`;
+const iconHeight = ({ size }) => `${size ? calcCSSValue(size) : '50%'}`;
 const iconOffset = ({ iconWidth }) => `${iconWidth * 0.5}px`;
 const clearBtnOffset = ({ inputHeight }) => `${inputHeight * 0.2}px`;
 
@@ -70,8 +69,8 @@ export const Input = styled.input`
   border-radius: ${borderRadius};
 
   border: 1px solid
-    ${({ validationMsg }) =>
-      validationMsg ? def.validationColor : def.borderColor};
+    ${({ showValidationMsg }) =>
+      showValidationMsg ? def.validationColor : def.borderColor};
 
   outline: none;
   transition-property: background-color;
@@ -119,7 +118,7 @@ export const ClearInputBtn = styled(ButtonBase)`
 export const ValidationMessage = styled.p`
   margin-top: 2px;
   margin-left: ${borderRadius};
-  letter-spacing: -0.2px;
+  /* letter-spacing: -0.2px; */
 
   color: ${({ color }) => color || def.validationColor};
   font-size: ${validationFontSize};

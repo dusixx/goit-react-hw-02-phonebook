@@ -3,6 +3,7 @@ import { ButtonBase } from '../../styles/shared';
 
 export const Button = styled(ButtonBase)`
   display: inline-flex;
+  gap: 4px;
   width: 100px;
 
   font-size: inherit;

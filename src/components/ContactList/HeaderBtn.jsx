@@ -10,7 +10,7 @@ export const HeaderBtn = ({ name, onClick, sorted }) => {
 
   return (
     <Button type="button" name={name} onClick={onClick}>
-      {name}
+      <span>{name}</span>
       {Icon && <Icon size={ICON_SIZE} color="var(--color-accent)" />}
     </Button>
   );

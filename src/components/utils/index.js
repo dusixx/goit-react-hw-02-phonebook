@@ -1,11 +1,12 @@
 export const isStr = v => typeof v === 'string';
 export const isNum = v => !isNaN(v - parseFloat(v));
+export const isNonEmptyArray = v => Array.isArray(v) && v.length;
 
-export function cap(str) {
-  return typeof str === 'string' && str
-    ? str[0].toUpperCase() + str.slice(1)
-    : '';
+export function cap(v) {
+  return isStr(v) && v ? v[0].toUpperCase() + v.slice(1) : '';
 }
+
+export const calcCSSValue = v => (isNum(v) ? `${v}px` : v);
 
 export const getRandomHexColor = () =>
   `#${Math.floor(Math.random() * 0xffffff)

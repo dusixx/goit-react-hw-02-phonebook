@@ -65,6 +65,8 @@ export class TextField extends Component {
     pattern: PropTypes.instanceOf(RegExp),
   };
 
+  state = { isValid: true, canShowValidationMsg: false };
+
   constructor(props) {
     super(props);
     this.iconRef = React.createRef();
@@ -77,17 +79,47 @@ export class TextField extends Component {
     this.forceUpdate();
   }
 
-  handleChange = (e, ...restArgs) => {
+  // componentDidUpdate() {
+  //   const { value, name } = this.props;
+  //   const ev = new Event('input', { bubbles: true });
+  //   //ev.simulated = true;
+  //   this.inputRef.current.dispatchEvent(ev);
+  //   // console.log(this.inputRef);
+  //   //value && this.handleChange({ target: { value } }, name);
+  // }
+
+  handleChange = (e, name) => {
+    console.log('handleChange');
+    // e === null при клике на clearBtn
+    const value = e?.target?.value || '';
+
+    const isValid = this.isValid(value);
+    this.setState({ isValid });
+
     const { onChange } = this.props;
-    onChange && onChange(e, ...restArgs);
+    onChange && onChange(e, { name, value, isValid });
   };
 
-  handleBlur = (e, ...restArgs) => {
+  isValid(value) {
+    const { pattern = DEF_PATTERN, required = false } = this.props;
+    // даже если поле необязательное, но значение введено -
+    // проверяем его соотвествие паттерну
+    return value ? pattern.test(value) : !required;
+  }
+
+  handleBlur = e => {
+    // разрешаем показывать сообщение для поля,
+    // если была хоть одна потеря фокуса с непустым значением
+    const { canShowValidationMsg } = this.state;
+    if (!canShowValidationMsg)
+      this.setState({ canShowValidationMsg: !!e.target.value });
+
     const { onBlur } = this.props;
-    onBlur && onBlur(e, ...restArgs);
+    onBlur && onBlur(e);
   };
 
   render() {
+    const { isValid, canShowValidationMsg } = this.state;
     const { handleChange, handleBlur, iconWidth, inputHeight } = this;
 
     const {
@@ -101,8 +133,8 @@ export class TextField extends Component {
       width,
       height,
       // validation
-      pattern = DEF_PATTERN,
-      required,
+      pattern /* чтобы не прокинулось инпуту */,
+      required /* чтобы не прокинулось инпуту */,
       validationMsg,
       validationMsgColor,
       // icon
@@ -111,6 +143,8 @@ export class TextField extends Component {
       iconColor,
       ...restProps
     } = this.props;
+
+    const showValidationMsg = canShowValidationMsg && !isValid && validationMsg;
 
     return (
       // note: если сюда прокинуть весь restProps, и задать, например, для TextField
@@ -121,10 +155,6 @@ export class TextField extends Component {
         height={height}
         //
         // на инпуте не сработает, он не получает фокус
-        // note: через раз приходит 2 аргумент-объект
-        // В консоле видно, что каждый раз вызывается дважды
-        // onBlur={e => handleBlur(e, { name, pattern, required })}
-        //
         onBlur={handleBlur}
       >
         <InputWrapper>
@@ -133,13 +163,13 @@ export class TextField extends Component {
             type={type || 'text'}
             name={name}
             placeholder={label || name}
-            onChange={e => handleChange(e, { name, pattern, required })}
+            onChange={e => handleChange(e, name)}
             value={value}
-            validationMsg={validationMsg}
             ref={this.inputRef}
             // calculated
             iconWidth={iconWidth}
             inputHeight={inputHeight}
+            showValidationMsg={showValidationMsg}
             // (*)
             {...restProps}
           />
@@ -157,14 +187,14 @@ export class TextField extends Component {
           {/* Clear btn */}
           {value && (
             <ClearBtn
-              onClick={() => handleChange(null, { name, pattern, required })}
+              onClick={() => handleChange(null, name)}
               // calculated
               inputHeight={inputHeight}
             />
           )}
         </InputWrapper>
         {/* Validation msg */}
-        {validationMsg && (
+        {showValidationMsg && (
           <ValidationMessage
             inputHeight={inputHeight}
             color={validationMsgColor}

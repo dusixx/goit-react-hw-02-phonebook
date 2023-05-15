@@ -73,7 +73,7 @@ export const Block = styled.div`
 // Backdrop
 
 const BD_DEF_OPACITY = 0.5;
-const BD_DEF_ZINDEX = 9999;
+const BD_DEF_ZINDEX = 999;
 
 export const Backdrop = styled.div`
   position: fixed;
@@ -86,10 +86,11 @@ export const Backdrop = styled.div`
   background-color: ${({ bgColor }) => bgColor || 'black'};
   opacity: ${({ opacity }) => opacity || BD_DEF_OPACITY};
   z-index: ${({ zindex }) => zindex || BD_DEF_ZINDEX};
+
   visibility: visible;
   overflow: auto;
 
-  transition-property: opacity, visibility;
+  transition-property: opacity;
   transition-timing-function: var(--trans-func);
   transition-duration: var(--trans-duration);
 `;

@@ -9,6 +9,8 @@ import { ContactEditor } from 'components/ContactList/ContactEditor';
 import { Filter } from 'components/ContactList/Filter';
 import { getId } from 'components/utils';
 
+const EDITOR_TITLE_ADD = 'Add contact';
+const EDITOR_TITLE_EDIT = 'Edit contact';
 const MSG_NO_CONTACTS = "You don't have any contacts yet";
 
 //
@@ -109,17 +111,22 @@ export class App extends Component {
   handleEditorSubmit = (_, data) => {
     const { editedIndex } = this.state;
 
-    if (editedIndex < 0) {
-      this.addContact(data);
-    } else {
-      this.editContact(editedIndex, data);
-    }
+    if (editedIndex < 0) this.addContact(data);
+    else this.editContact(editedIndex, data);
 
     this.handleEditorClose();
   };
 
+  getFieldValues = () => {
+    const { editedIndex, contacts } = this.state;
+    if (editedIndex < 0) return;
+
+    const { name, number } = contacts[editedIndex];
+    return [name, number];
+  };
+
   render() {
-    const { contacts, filter, showEditor } = this.state;
+    const { contacts, filter, showEditor, editedIndex } = this.state;
     const {
       handleAddContactClick,
       handleFilterChange,
@@ -127,17 +134,22 @@ export class App extends Component {
       handleListSort,
       handleEditorClose,
       handleEditorSubmit,
+      getFieldValues,
     } = this;
 
     return (
       <Container width="50%">
         {showEditor && (
           <ContactEditor
-            title="Add contact"
+            width={500}
+            zindex={99}
+            title={editedIndex < 0 ? EDITOR_TITLE_ADD : EDITOR_TITLE_EDIT}
             onClose={handleEditorClose}
             onSubmit={handleEditorSubmit}
+            fieldValues={getFieldValues()}
           />
         )}
+
         <Header>
           <h1>
             <RiContactsBook2Fill size={22} color="var(--color-accent)" />
@@ -152,15 +164,15 @@ export class App extends Component {
             Add
           </ButtonPrimary>
         </Header>
-        {!!contacts.length && (
-          <Block marginBottom="20px" marginTop="15px">
-            <Filter
-              value={filter}
-              onChange={handleFilterChange}
-              disabled={!contacts.length}
-            />
-          </Block>
-        )}
+
+        <Block marginBottom="20px" marginTop="15px">
+          <Filter
+            value={filter}
+            onChange={handleFilterChange}
+            disabled={!contacts.length}
+          />
+        </Block>
+
         {!!contacts.length && (
           <Block>
             <ContactList
@@ -172,6 +184,7 @@ export class App extends Component {
             />
           </Block>
         )}
+
         {!contacts.length && (
           <NoContacts>
             {MSG_NO_CONTACTS}

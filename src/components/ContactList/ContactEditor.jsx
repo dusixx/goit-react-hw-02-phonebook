@@ -12,13 +12,15 @@ import { Form, CloseBtn, Title, SaveBtn } from './ContactEditor.styled';
 
 const field = {
   name: {
-    pattern: /^[a-zа-яіїє]{2,}(\s+[a-zа-яіїє]{2,})?$/iu,
-    validationMsg:
-      'First and last name(optional) must contain only letters and be at least 2 characters long',
+    icon: IconUser,
+    pattern: /^\s*[a-zа-яіїє]{2,}\s*(\s+[a-zа-яіїє]{2,})?\s*$/iu,
+    validationMsg: `First and last name(optional) must contain only letters and 
+      be at least 2 characters long`,
     required: true,
   },
   number: {
-    pattern: /^\d{3}(-\d{2}){2}$/,
+    icon: IconPhone,
+    pattern: /^\s*\d{3}(-\d{2}){2}\s*$/,
     validationMsg: 'Required number format: XXX-XX-XX',
     required: true,
   },
@@ -28,12 +30,10 @@ const initialState = {
   name: {
     value: '',
     isValid: !field.name.required,
-    validationMsg: '',
   },
   number: {
     value: '',
     isValid: !field.number.required,
-    validationMsg: '',
   },
 };
 
@@ -44,44 +44,33 @@ const initialState = {
 export class ContactEditor extends Component {
   state = initialState;
 
-  // componentWillMount() {
-  //   const { data } = this.props;
-  // }
-
-  getValidationInfo(e) {
-    const { name } = e.target;
-    const { isValid } = this.state[name];
-    return { name, validationMsg: !isValid && field[name].validationMsg };
+  // init
+  componentDidMount() {
+    this.setFieldValues();
   }
 
-  handleInputChange = (e, { name, pattern, required }) => {
-    // e === null при клике на clearBtn
-    const value = e?.target?.value || '';
-    // если поле необязательное, но значение введено -
-    // проверяем его валидность
-    const isValid = value ? pattern.test(value) : !required;
+  setFieldValues() {
+    const { fieldValues } = this.props;
+    if (!Array.isArray(fieldValues)) return;
 
+    Object.keys(this.state).forEach((name, idx) => {
+      const value = fieldValues[idx] || '';
+      this.setState({ [name]: { value, isValid: true } });
+    });
+  }
+
+  handleInputChange = (e, { name, value, isValid }) => {
     this.setState(cur => ({
       [name]: {
-        ...cur[name],
         value,
         isValid,
       },
     }));
   };
 
-  handleInputBlur = e => {
-    const { name, validationMsg } = this.getValidationInfo(e);
-    this.setState(cur => ({
-      [name]: { ...cur[name], validationMsg },
-    }));
-  };
-
   getFormData() {
-    console.log(this.state, Object.entries(this.state));
-
     return Object.entries(this.state).reduce((res, [key, data]) => {
-      res[key] = data.value;
+      res[key] = data.value.trim();
       return res;
     }, {});
   }
@@ -96,50 +85,52 @@ export class ContactEditor extends Component {
   };
 
   render() {
-    const { onClose, title } = this.props;
+    const { onClose, title, zindex, width } = this.props;
     const { name, number } = this.state;
-    const { handleInputChange, handleSubmit, handleInputBlur } = this;
+    const { handleInputChange, handleSubmit } = this;
 
     return (
-      <Form width="500px" onSubmit={handleSubmit}>
-        <Title>{title}</Title>
+      <>
+        <Backdrop zindex={zindex} />
+        <Form width={width} onSubmit={handleSubmit} zindex={zindex + 1}>
+          <Title>{title}</Title>
 
-        <CloseBtn type="button" title="Close" onClick={onClose}>
-          <IconClose size="100%" />
-        </CloseBtn>
+          <CloseBtn type="button" title="Close" onClick={onClose}>
+            <IconClose size="100%" />
+          </CloseBtn>
 
-        {/* name */}
-        <TextField
-          name="name"
-          autoComplete="off"
-          required={field.name.required}
-          style={{ borderRadius: 'var(--border-radius)' }}
-          pattern={field.name.pattern}
-          icon={IconUser}
-          value={name.value}
-          onChange={handleInputChange}
-          onBlur={handleInputBlur}
-          validationMsg={name.validationMsg}
-        />
+          {/* name */}
+          <TextField
+            name="name"
+            autoComplete="off"
+            autoFocus
+            required={field.name.required}
+            style={{ borderRadius: 'var(--border-radius)' }}
+            pattern={field.name.pattern}
+            icon={field.name.icon}
+            value={name.value}
+            onChange={handleInputChange}
+            validationMsg={field.name.validationMsg}
+          />
 
-        {/* number */}
-        <TextField
-          name="number"
-          autoComplete="off"
-          required={field.number.required}
-          style={{ borderRadius: 'var(--border-radius)' }}
-          pattern={field.number.pattern}
-          icon={IconPhone}
-          value={number.value}
-          onChange={handleInputChange}
-          onBlur={handleInputBlur}
-          validationMsg={number.validationMsg}
-        />
+          {/* number */}
+          <TextField
+            name="number"
+            autoComplete="off"
+            required={field.number.required}
+            style={{ borderRadius: 'var(--border-radius)' }}
+            pattern={field.number.pattern}
+            icon={field.number.icon}
+            value={number.value}
+            onChange={handleInputChange}
+            validationMsg={field.number.validationMsg}
+          />
 
-        <SaveBtn type="submit" disabled={!name.isValid || !number.isValid}>
-          Save
-        </SaveBtn>
-      </Form>
+          <SaveBtn type="submit" disabled={!name.isValid || !number.isValid}>
+            Save
+          </SaveBtn>
+        </Form>
+      </>
     );
   }
 }

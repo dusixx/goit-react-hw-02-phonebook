@@ -5,16 +5,22 @@ import {
   FlexCentered,
   Disabled,
 } from 'styles/shared';
+import { calcCSSValue } from 'components/utils';
 
 export const Form = styled.form`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   ${FlexCentered(`flex-direction: column; gap: 25px`)};
 
   padding: 20px;
-  width: ${({ width }) => width};
+  width: ${({ width }) => calcCSSValue(width)};
+  z-index: ${({ zindex }) => zindex};
 
   background-color: white;
-  box-shadow: var(--box-shadow);
+  /* box-shadow: var(--box-shadow); */
   border-radius: var(--border-radius);
 `;
 
@@ -49,10 +55,11 @@ export const SaveBtn = styled(ButtonPrimary)`
   }
 `;
 
-export const Field = styled.div`
+export const FieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
   width: 100%;
-`;
-
-export const ValidationMsg = styled.p`
-  font-size: 0.9rem;
+  height: 120px;
+  overflow-y: auto;
 `;
