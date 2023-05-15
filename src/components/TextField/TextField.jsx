@@ -76,34 +76,25 @@ export class TextField extends Component {
   componentDidMount() {
     this.iconWidth = this.iconRef.current?.offsetWidth || 0;
     this.inputHeight = this.inputRef.current.offsetHeight;
+    // для получения calculated свойств отрендеренных элементов
+    // (вероятно, не самый корректный способ)
     this.forceUpdate();
   }
 
-  // componentDidUpdate() {
-  //   const { value, name } = this.props;
-  //   const ev = new Event('input', { bubbles: true });
-  //   //ev.simulated = true;
-  //   this.inputRef.current.dispatchEvent(ev);
-  //   // console.log(this.inputRef);
-  //   //value && this.handleChange({ target: { value } }, name);
-  // }
-
   handleChange = (e, name) => {
-    console.log('handleChange');
-    // e === null при клике на clearBtn
+    // (e === null) при клике на clearBtn
     const value = e?.target?.value || '';
-
     const isValid = this.isValid(value);
-    this.setState({ isValid });
-
     const { onChange } = this.props;
+
+    this.setState({ isValid });
     onChange && onChange(e, { name, value, isValid });
   };
 
   isValid(value) {
     const { pattern = DEF_PATTERN, required = false } = this.props;
     // даже если поле необязательное, но значение введено -
-    // проверяем его соотвествие паттерну
+    // проверяем соотвествие паттерну
     return value ? pattern.test(value) : !required;
   }
 
@@ -124,20 +115,20 @@ export class TextField extends Component {
 
     const {
       value,
-      // извлекаем из props,
-      // иначе перебьет текущий из { ...restProps } (*)
+      // извлекаем onChange,
+      // иначе перебьет текущий (*)
       onChange,
       name,
       type,
       label,
       width,
       height,
-      // validation
-      pattern /* чтобы не прокинулось инпуту */,
-      required /* чтобы не прокинулось инпуту */,
+      // извлекаем pattern и required,
+      // чтобы не прокинулось инпуту
+      pattern,
+      required,
       validationMsg,
       validationMsgColor,
-      // icon
       icon,
       iconSize,
       iconColor,
@@ -153,26 +144,26 @@ export class TextField extends Component {
       <Field
         width={width}
         height={height}
-        //
         // на инпуте не сработает, он не получает фокус
         onBlur={handleBlur}
       >
         <InputWrapper>
           {/* Input */}
           <Input
-            type={type || 'text'}
             name={name}
+            type={type || 'text'}
             placeholder={label || name}
             onChange={e => handleChange(e, name)}
             value={value}
             ref={this.inputRef}
-            // calculated
+            //
+            // вычисляемые пропсы
             iconWidth={iconWidth}
             inputHeight={inputHeight}
             showValidationMsg={showValidationMsg}
-            // (*)
-            {...restProps}
+            {...restProps} // (*)
           />
+
           {/* Left-side icon */}
           {icon && (
             <Icon
@@ -180,19 +171,23 @@ export class TextField extends Component {
               size={iconSize}
               color={iconColor}
               ref={this.iconRef}
-              // calculated
+              //
+              // вычисляемые пропсы
               iconWidth={iconWidth}
             />
           )}
+
           {/* Clear btn */}
           {value && (
             <ClearBtn
               onClick={() => handleChange(null, name)}
-              // calculated
+              //
+              // вычисляемые пропсы
               inputHeight={inputHeight}
             />
           )}
         </InputWrapper>
+
         {/* Validation msg */}
         {showValidationMsg && (
           <ValidationMessage

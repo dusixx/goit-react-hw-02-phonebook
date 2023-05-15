@@ -5,7 +5,7 @@ import { ContactList } from 'components/ContactList/ContactList';
 import { Container, Header, NoContacts } from './App.styled';
 import { contacts as initialContacts } from '../../data/contacts';
 import { ButtonPrimary, Block } from 'styles/shared';
-import { ContactEditor } from 'components/ContactList/ContactEditor';
+import { ContactEditor } from 'components/ContactEditor/ContactEditor';
 import { Filter } from 'components/ContactList/Filter';
 import { getId } from 'components/utils';
 
@@ -77,13 +77,13 @@ export class App extends Component {
   }
 
   handleListSort = (_, key, ascending) => {
-    this.setState({
-      contacts: this.state.contacts.sort(
+    this.setState(cur => ({
+      contacts: [...cur.contacts].sort(
         ascending
           ? (a, b) => a[key].localeCompare(b[key])
           : (a, b) => b[key].localeCompare(a[key])
       ),
-    });
+    }));
   };
 
   handleAddContactClick = e => {

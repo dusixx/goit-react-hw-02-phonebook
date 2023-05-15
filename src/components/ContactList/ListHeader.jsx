@@ -37,10 +37,14 @@ export class ListHeader extends Component {
     );
   };
 
+  // handleBlur = e => {
+  //   this.setState(cur => ({ sort: { name: null, number: null } }));
+  // };
+
   render() {
     return (
       <TableHeader itemHeight={this.props.itemHeight}>
-        <tr>
+        <tr onBlur={this.handleBlur}>
           <th>
             <input type="checkbox" />
           </th>

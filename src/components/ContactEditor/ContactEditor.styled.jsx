@@ -34,9 +34,7 @@ export const CloseBtn = styled(ButtonBase)`
   position: absolute;
   top: 10px;
   right: 10px;
-
   height: 20px;
-  z-index: 1;
 
   color: var(--color-black);
   transition-property: color;
@@ -48,18 +46,7 @@ export const CloseBtn = styled(ButtonBase)`
 `;
 
 export const SaveBtn = styled(ButtonPrimary)`
-  width: 70px;
-
   &[disabled] {
     ${Disabled}
   }
-`;
-
-export const FieldGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  width: 100%;
-  height: 120px;
-  overflow-y: auto;
 `;
