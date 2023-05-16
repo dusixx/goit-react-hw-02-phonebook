@@ -30,6 +30,10 @@ export const ButtonBase = styled.button`
 
   transition-timing-function: var(--trans-func);
   transition-duration: var(--trans-duration);
+
+  &[disabled] {
+    ${Disabled}
+  }
 `;
 
 export const ButtonPrimary = styled(ButtonBase)`

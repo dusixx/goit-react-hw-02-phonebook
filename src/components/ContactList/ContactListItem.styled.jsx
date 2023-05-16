@@ -1,15 +1,16 @@
 import styled from '@emotion/styled';
-import { Controls as Ctrls } from './Controls';
 
 export const TableRow = styled.tr`
   height: ${({ itemHeight }) => itemHeight};
 
+  word-break: break-all;
+
   & td {
     text-align: center;
     height: inherit;
-  }
-`;
 
-export const Controls = styled(Ctrls)`
-  margin-left: auto;
+    & div[data-checkbox] {
+      min-width: 20px;
+    }
+  }
 `;

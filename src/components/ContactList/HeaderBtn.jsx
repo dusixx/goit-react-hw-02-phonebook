@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
-import { CgSortAz, CgSortZa } from 'react-icons/cg';
+import { IconSortAz, IconSortZa } from 'styles/icons';
 import { Button } from './HeaderBtn.styled';
 
-const ICON_SIZE = 16;
+const ICON_SIZE = 14;
 
 export const HeaderBtn = ({ name, onClick, sorted }) => {
   // asc(true), desc(false), none(null)
-  const Icon = sorted != null ? (sorted ? CgSortAz : CgSortZa) : null;
+  const Icon = sorted != null ? (sorted ? IconSortAz : IconSortZa) : null;
 
   return (
     <Button type="button" name={name} onClick={onClick}>

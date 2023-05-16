@@ -1,8 +1,8 @@
 import { Component } from 'react';
-import { RiContactsBook2Fill, RiEmotionSadLine } from 'react-icons/ri';
-import { BiUserPlus } from 'react-icons/bi';
+import { IconContactsBook, IconSmileSad, IconUserPlus } from 'styles/icons';
 import { ContactList } from 'components/ContactList/ContactList';
 import { Container, Header, NoContacts } from './App.styled';
+import { Backdrop } from 'components/Backdrop/Backdrop';
 import { contacts as initialContacts } from '../../data/contacts';
 import { ButtonPrimary, Block } from 'styles/shared';
 import { ContactEditor } from 'components/ContactEditor/ContactEditor';
@@ -117,6 +117,12 @@ export class App extends Component {
     this.handleEditorClose();
   };
 
+  handleBackdropClick = e => {
+    // ловим только на самом бекдропе
+    if (e.currentTarget !== e.target) return;
+    this.setState({ showEditor: false });
+  };
+
   getFieldValues = () => {
     const { editedIndex, contacts } = this.state;
     if (editedIndex < 0) return;
@@ -135,24 +141,27 @@ export class App extends Component {
       handleEditorClose,
       handleEditorSubmit,
       getFieldValues,
+      handleBackdropClick,
     } = this;
 
     return (
-      <Container width="50%">
-        {showEditor && (
-          <ContactEditor
-            width={500}
-            zindex={99}
-            title={editedIndex < 0 ? EDITOR_TITLE_ADD : EDITOR_TITLE_EDIT}
-            onClose={handleEditorClose}
-            onSubmit={handleEditorSubmit}
-            fieldValues={getFieldValues()}
-          />
-        )}
+      <Container>
+        <Backdrop hidden={!showEditor} onClick={handleBackdropClick}>
+          {showEditor && (
+            <ContactEditor
+              width={500}
+              title={editedIndex < 0 ? EDITOR_TITLE_ADD : EDITOR_TITLE_EDIT}
+              onClose={handleEditorClose}
+              onSubmit={handleEditorSubmit}
+              fieldValues={getFieldValues()}
+              autoComplete="off"
+            />
+          )}
+        </Backdrop>
 
         <Header>
           <h1>
-            <RiContactsBook2Fill size={22} color="var(--color-accent)" />
+            <IconContactsBook size={22} color="var(--color-accent)" />
             PhoneBook
           </h1>
           <ButtonPrimary
@@ -160,7 +169,7 @@ export class App extends Component {
             name="addContact"
             onClick={handleAddContactClick}
           >
-            <BiUserPlus size={20} />
+            <IconUserPlus size={20} />
             Add
           </ButtonPrimary>
         </Header>
@@ -188,7 +197,7 @@ export class App extends Component {
         {!contacts.length && (
           <NoContacts>
             {MSG_NO_CONTACTS}
-            <RiEmotionSadLine size={20} />
+            <IconSmileSad size={20} />
           </NoContacts>
         )}
       </Container>

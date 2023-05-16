@@ -3,10 +3,20 @@ import { FlexCentered } from 'styles/shared';
 
 export const Container = styled.div`
   margin: 0 auto 0 auto;
+  width: 80%;
   padding-top: 30px;
 
+  @media screen and (min-width: 332px) {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  @media screen and (min-width: 1200px) {
+    width: 50%;
+  }
+
   width: ${({ width }) => width || '100%'};
-  min-width: 320px;
+  //min-width: 320px;
 `;
 
 export const Header = styled.div`

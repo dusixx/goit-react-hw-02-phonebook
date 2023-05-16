@@ -1,12 +1,7 @@
 import PropTypes from 'prop-types';
 import { getId, cap } from 'components/utils';
 import { Container, Button } from './Controls.styled';
-
-import {
-  MdOutlineEdit as IconEdit,
-  MdDeleteOutline as IconDelete,
-  MdCopyAll as IconCopy,
-} from 'react-icons/md';
+import { IconCopy, IconDelete, IconEdit } from 'styles/icons';
 
 // порядок контролов слева-направо
 // можно расширить, например, copy: {icon, size, ....}
@@ -16,7 +11,7 @@ const data = {
   delete: IconDelete,
 };
 
-export const Control = ({ icon: ReactIcon, size, name, onClick, targetId }) => (
+const Control = ({ icon: ReactIcon, size, name, onClick, targetId }) => (
   <Button
     type="button"
     onClick={() => onClick(targetId, name)}

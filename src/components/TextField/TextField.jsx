@@ -1,52 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { VscClose as IconClose } from 'react-icons/vsc';
+import { Icon, ClearBtn } from './Comps';
 
 import {
   Field,
   InputWrapper,
   Input,
-  IconWrapper,
-  ClearInputBtn,
   ValidationMessage,
 } from './TextField.styled';
-
-//
-// Icon
-//
-
-const Icon = React.forwardRef(
-  ({ value: ReactIcon, size, color, iconWidth }, ref) => {
-    return (
-      ReactIcon && (
-        <IconWrapper ref={ref} size={size} iconWidth={iconWidth}>
-          <ReactIcon size="100%" color={color} />
-        </IconWrapper>
-      )
-    );
-  }
-);
-
-Icon.propTypes = {
-  value: PropTypes.func,
-  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
-//
-// Clear btn
-//
-
-const ClearBtn = ({ onClick, inputHeight }) => {
-  return (
-    <ClearInputBtn type="button" onClick={onClick} inputHeight={inputHeight}>
-      <IconClose size="100%" />
-    </ClearInputBtn>
-  );
-};
-
-ClearBtn.propTypes = {
-  onClick: PropTypes.func,
-};
 
 //
 // TextField
@@ -58,7 +19,6 @@ export class TextField extends Component {
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
-    onValidate: PropTypes.func,
     label: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
@@ -154,13 +114,13 @@ export class TextField extends Component {
             type={type || 'text'}
             placeholder={label || name}
             onChange={e => handleChange(e, name)}
+            showValidationMsg={showValidationMsg}
             value={value}
             ref={this.inputRef}
             //
             // вычисляемые пропсы
             iconWidth={iconWidth}
             inputHeight={inputHeight}
-            showValidationMsg={showValidationMsg}
             {...restProps} // (*)
           />
 

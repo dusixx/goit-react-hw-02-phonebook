@@ -8,6 +8,12 @@ export function cap(v) {
 
 export const calcCSSValue = v => (isNum(v) ? `${v}px` : v);
 
+export const parseCSSValue = v => {
+  const value = parseFloat(v);
+  const unit = String(v).slice(String(value).length) || 'px';
+  return { value, unit };
+};
+
 export const getRandomHexColor = () =>
   `#${Math.floor(Math.random() * 0xffffff)
     .toString(0x10)

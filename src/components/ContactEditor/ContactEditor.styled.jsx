@@ -1,27 +1,26 @@
 import styled from '@emotion/styled';
-import {
-  ButtonBase,
-  ButtonPrimary,
-  FlexCentered,
-  Disabled,
-} from 'styles/shared';
+import { ButtonBase, ButtonPrimary, FlexCentered } from 'styles/shared';
 import { calcCSSValue } from 'components/utils';
 
 export const Form = styled.form`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
 
   ${FlexCentered(`flex-direction: column; gap: 25px`)};
 
   padding: 20px;
-  width: ${({ width }) => calcCSSValue(width)};
+  width: 95%;
   z-index: ${({ zindex }) => zindex};
+
+  @media screen and (min-width: 540px) {
+    width: ${({ width }) => calcCSSValue(width)};
+  }
 
   background-color: white;
   /* box-shadow: var(--box-shadow); */
   border-radius: var(--border-radius);
+  transform: translate(-50%, -50%);
 `;
 
 export const Title = styled.h2`
@@ -46,7 +45,5 @@ export const CloseBtn = styled(ButtonBase)`
 `;
 
 export const SaveBtn = styled(ButtonPrimary)`
-  &[disabled] {
-    ${Disabled}
-  }
+  padding: 8px 25px 8px 25px;
 `;
