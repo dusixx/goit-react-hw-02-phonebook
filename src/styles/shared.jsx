@@ -71,6 +71,5 @@ export const Block = styled.div`
   background-color: white;
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
-
   overflow: auto;
 `;
