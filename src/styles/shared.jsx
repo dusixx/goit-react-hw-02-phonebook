@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { isStr } from 'components/utils';
+import { isStr, calcCSSValue } from 'components/utils';
 
 // Utils
 
@@ -59,11 +59,11 @@ export const ButtonPrimary = styled(ButtonBase)`
 // Misc
 
 export const Block = styled.div`
-  ${FlexCentered()}
-  /* display: ${({ hidden }) => (hidden ? 'none' : 'flex')}; */
+  ${FlexCentered(`align-items: unset`)};
 
-  width: ${({ width }) => width || '100%'};
-  height: ${({ height }) => height};
+  width: ${({ width }) => calcCSSValue(width) || '100%'};
+  height: ${({ height }) => calcCSSValue(height)};
+  max-height: ${({ maxHeight }) => calcCSSValue(maxHeight)};
 
   margin-bottom: ${({ marginBottom }) => marginBottom};
   margin-top: ${({ marginTop }) => marginTop};
@@ -71,5 +71,6 @@ export const Block = styled.div`
   background-color: white;
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
-  overflow: hidden;
+
+  overflow: auto;
 `;

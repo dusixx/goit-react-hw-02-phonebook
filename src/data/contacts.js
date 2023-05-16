@@ -6,4 +6,11 @@ export const contacts = [
   { id: 'id-5', name: 'Hesus Martinez', number: '447-91-26' },
   { id: 'id-6', name: 'Lino Sommerset', number: '227-88-26' },
   { id: 'id-7', name: 'Jeremy Breeze', number: '227-91-26' },
+  { id: 'id-8', name: 'Rosie Simdspson', number: '459-12-56' },
+  { id: 'id-9', name: 'Hermione Kldsdine', number: '443-89-12' },
+  { id: 'id-10', name: 'Eden Cledsddments', number: '645-17-79' },
+  { id: 'id-11', name: 'Annie Copdsdeland', number: '225-91-26' },
+  { id: 'id-12', name: 'Hesdsus Martinez', number: '445-91-26' },
+  { id: 'id-13', name: 'Lidsno Sommerset', number: '225-88-26' },
+  { id: 'id-14', name: 'Jerdsemy Breeze', number: '225-91-26' },
 ];

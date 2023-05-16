@@ -183,7 +183,7 @@ export class App extends Component {
         </Block>
 
         {!!contacts.length && (
-          <Block>
+          <Block maxHeight="70vh">
             <ContactList
               value={this.filterContacts()}
               itemHeight="50px"
