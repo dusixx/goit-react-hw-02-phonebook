@@ -4,14 +4,18 @@ import { calcCSSValue } from 'components/utils';
 
 export const Form = styled.form`
   position: absolute;
-  top: 50%;
   left: 50%;
+  top: 50%;
+
+  /* Вписываем форму по высоте, если низкий вьюпорт */
+  @media screen and (max-height: ${({ formHeight }) => formHeight}px) {
+    top: 10%;
+    transform: translateX(-50%);
+  }
 
   ${FlexCentered(`flex-direction: column; gap: 25px`)};
-
   padding: 20px;
   width: 95%;
-  z-index: ${({ zindex }) => zindex};
 
   @media screen and (min-width: 540px) {
     width: ${({ width }) => calcCSSValue(width)};
@@ -20,6 +24,7 @@ export const Form = styled.form`
   background-color: white;
   /* box-shadow: var(--box-shadow); */
   border-radius: var(--border-radius);
+  z-index: ${({ zindex }) => zindex};
   transform: translate(-50%, -50%);
 `;
 

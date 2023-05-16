@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { TextField } from 'components/TextField/TextField';
 import { IconClose } from 'styles/icons';
 import { Form, CloseBtn, Title, SaveBtn } from './ContactEditor.styled';
@@ -16,17 +16,25 @@ export class ContactEditor extends Component {
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
+  constructor(props) {
+    super(props);
+    this.formRef = React.createRef();
+  }
+
   // fieldName: {value: string, isValid: bool}
   state = initialState;
 
   componentDidMount() {
     // ставим значения полей, если заданы
+    this.formHeight = this.formRef.current.offsetHeight;
     this.setFieldValues();
+    // для получения formHeight отрендеренной формы
+    // (вероятно, не самый корректный способ)
+    this.forceUpdate();
   }
 
-  // ставит начальные значения для полей, заданные в пропсе
-  // fieldValues массивом [value1, value2, ...]
-  // каждому полю соотсевтует свое значение в массиве
+  // ставит начальные значения для полей,
+  // заданные в пропсе fieldValues массивом[fieldValue1, fieldValue2, ...]
   setFieldValues() {
     const { fieldValues } = this.props;
     if (!Array.isArray(fieldValues)) return;
@@ -74,7 +82,14 @@ export class ContactEditor extends Component {
     const { handleInputChange, handleSubmit, isFormDataValid } = this;
 
     return (
-      <Form width={width} onSubmit={handleSubmit} autoComplete={autoComplete}>
+      <Form
+        width={width}
+        onSubmit={handleSubmit}
+        autoComplete={autoComplete}
+        ref={this.formRef}
+        // вычисляемое
+        formHeight={this.formHeight}
+      >
         <Title>{title}</Title>
 
         <CloseBtn type="button" title="Close" onClick={onClose}>
