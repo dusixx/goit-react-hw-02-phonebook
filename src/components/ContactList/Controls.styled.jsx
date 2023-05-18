@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ButtonBase, FlexCentered } from 'styles/shared';
-import { parseCSSValue } from 'components/utils';
+import { parseCSSValue, calcCSSValue } from 'components/utils';
 
 const ICON_COLOR = '#a7a7a7';
 
@@ -15,7 +15,7 @@ export const Container = styled.div`
   min-width: 60px;
 
   @media screen and (min-width: 1200px) {
-    height: ${({ height }) => height || 'inherit'};
+    height: ${({ height }) => calcCSSValue(height) || 'inherit'};
   }
 
   @media screen and (min-width: 768px) {
@@ -23,7 +23,7 @@ export const Container = styled.div`
   }
 `;
 
-export const Button = styled(ButtonBase)`
+export const ControlBtn = styled(ButtonBase)`
   height: 100%;
 
   color: ${ICON_COLOR};

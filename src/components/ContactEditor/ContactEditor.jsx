@@ -36,11 +36,11 @@ export class ContactEditor extends Component {
   // ставит начальные значения для полей,
   // заданные в пропсе fieldValues массивом[fieldValue1, fieldValue2, ...]
   setFieldValues() {
-    const { fieldValues } = this.props;
-    if (!Array.isArray(fieldValues)) return;
+    const { fieldValues: vals } = this.props;
+    if (!Array.isArray(vals)) return;
 
     Object.keys(this.state).forEach((name, idx) => {
-      const value = fieldValues[idx] || '';
+      const value = vals[idx] || '';
       this.setState({ [name]: { value, isValid: true } });
     });
   }
@@ -74,7 +74,8 @@ export class ContactEditor extends Component {
     e.preventDefault();
     const { onSubmit } = this.props;
     onSubmit && onSubmit(e, this.getFormData());
-    this.resetForm();
+    // не ресетим, на случай, если форма не долждна закрываться при сабмите
+    // this.resetForm();
   };
 
   render() {

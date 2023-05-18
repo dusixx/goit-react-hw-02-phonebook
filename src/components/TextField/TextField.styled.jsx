@@ -118,7 +118,6 @@ export const ClearInputBtn = styled(ButtonBase)`
 export const ValidationMessage = styled.p`
   margin-top: 2px;
   margin-left: ${borderRadius};
-  /* letter-spacing: -0.2px; */
 
   color: ${({ color }) => color || def.validationColor};
   font-size: ${validationFontSize};

@@ -65,8 +65,8 @@ export const Block = styled.div`
   height: ${({ height }) => calcCSSValue(height)};
   max-height: ${({ maxHeight }) => calcCSSValue(maxHeight)};
 
-  margin-bottom: ${({ marginBottom }) => marginBottom};
-  margin-top: ${({ marginTop }) => marginTop};
+  margin-bottom: ${({ marginBottom }) => calcCSSValue(marginBottom)};
+  margin-top: ${({ marginTop }) => calcCSSValue(marginTop)};
 
   background-color: white;
   box-shadow: var(--box-shadow);

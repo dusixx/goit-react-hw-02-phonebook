@@ -1,3 +1,8 @@
 // Отключение скрола при бекдропе
-// Проверка существования контакта по имени номеру
-// Последний отредактрованный-добавленный подсветка
+// Добавить над таблицей кнопку обновления Reset с иконкой
+
+// navigator.permissions.query({ name: 'write-on-clipboard' }).then(result => {
+//   if (result.state == 'granted' || result.state == 'prompt') {
+//     alert('Write access granted!');
+//   }
+// });

@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
+import { calcCSSValue } from 'components/utils';
 
 export const TableRow = styled.tr`
-  height: ${({ itemHeight }) => itemHeight};
+  height: ${({ itemHeight }) => calcCSSValue(itemHeight)};
 
   word-break: break-all;
 

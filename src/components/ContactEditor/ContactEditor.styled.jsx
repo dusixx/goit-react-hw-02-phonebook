@@ -7,22 +7,21 @@ export const Form = styled.form`
   left: 50%;
   top: 50%;
 
+  ${FlexCentered(`flex-direction: column; gap: 25px`)};
+  padding: 20px;
+  width: 95%;
+
   /* Вписываем форму по высоте, если низкий вьюпорт */
   @media screen and (max-height: ${({ formHeight }) => formHeight}px) {
     top: 10%;
     transform: translateX(-50%);
   }
 
-  ${FlexCentered(`flex-direction: column; gap: 25px`)};
-  padding: 20px;
-  width: 95%;
-
   @media screen and (min-width: 540px) {
-    width: ${({ width }) => calcCSSValue(width)};
+    width: ${({ width }) => calcCSSValue(width) || '500px'};
   }
 
   background-color: white;
-  /* box-shadow: var(--box-shadow); */
   border-radius: var(--border-radius);
   z-index: ${({ zindex }) => zindex};
   transform: translate(-50%, -50%);

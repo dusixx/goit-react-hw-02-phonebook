@@ -22,12 +22,12 @@ export const Container = styled.div`
 export const Header = styled.div`
   ${FlexCentered(`justify-content: space-between`)}
   width: ${({ width }) => width || '100%'};
+`;
 
-  & h1 {
-    ${FlexCentered(`gap: 10px`)}
-    font-size: 24px;
-    letter-spacing: -1px;
-  }
+export const Logo = styled.h1`
+  ${FlexCentered(`gap: 10px`)}
+  font-size: 24px;
+  letter-spacing: -1px;
 `;
 
 export const NoContacts = styled.p`

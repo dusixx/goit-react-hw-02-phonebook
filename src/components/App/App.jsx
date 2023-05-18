@@ -1,17 +1,26 @@
 import { Component } from 'react';
 import { IconContactsBook, IconSmileSad, IconUserPlus } from 'styles/icons';
 import { ContactList } from 'components/ContactList/ContactList';
-import { Container, Header, NoContacts } from './App.styled';
+import { Container, Header, NoContacts, Logo } from './App.styled';
 import { Backdrop } from 'components/Backdrop/Backdrop';
 import { contacts as initialContacts } from '../../data/contacts';
 import { ButtonPrimary, Block } from 'styles/shared';
 import { ContactEditor } from 'components/ContactEditor/ContactEditor';
 import { Filter } from 'components/ContactList/Filter';
 import { getId } from 'components/utils';
+import { showError, showSuccess } from 'components/utils/notify';
+
+//
+// Constants
+//
 
 const EDITOR_TITLE_ADD = 'Add contact';
 const EDITOR_TITLE_EDIT = 'Edit contact';
 const MSG_NO_CONTACTS = "You don't have any contacts yet";
+const ERR_ALREADY_EXISTS = `The contact with the same name or number already exists`;
+const MSG_COPIED_SUCCESS = `The contact was copied to the clipboard`;
+const MSG_ADDED_SUCCESS = `The contact was added`;
+const MSG_DELETED_SUCCESS = `The contact was deleted`;
 
 //
 // App
@@ -55,27 +64,41 @@ export class App extends Component {
       case 'edit':
         return this.handleEditContact(id);
       case 'copy':
-        return this.handleCopyContact(id);
+        return this.handleCopyContactToClipboard(id);
       default:
     }
   };
 
   handleRemoveContact(id) {
-    this.setState({
-      contacts: this.state.contacts.filter(itm => itm.id !== id),
-    });
+    this.removeContact(id);
+    showSuccess(MSG_DELETED_SUCCESS);
   }
 
   handleEditContact(id) {
     const idx = this.state.contacts.findIndex(itm => itm.id === id);
-    this.setState({ editedIndex: idx, showEditor: true });
+    this.editedIndex = idx;
+    this.showContactEditor = true;
   }
 
-  handleCopyContact(id) {
+  async handleCopyContactToClipboard(id) {
     const target = this.state.contacts.find(itm => itm.id === id);
-    target && navigator.clipboard.writeText(JSON.stringify(target));
+
+    if (target) {
+      // для мобильных устройств вероятно не сработает
+      if (navigator.clipboard && isSecureContext) {
+        await navigator.clipboard.writeText(JSON.stringify(target));
+        showSuccess(MSG_COPIED_SUCCESS);
+      } else {
+        showError('Access is denied');
+      }
+    }
   }
 
+  /**
+   * Сортирует список контактов по заданному полю
+   * @param {*} key - поле (name|number)
+   * @param {*} ascending - порядок сортировки
+   */
   handleListSort = (_, key, ascending) => {
     this.setState(cur => ({
       contacts: [...cur.contacts].sort(
@@ -86,18 +109,35 @@ export class App extends Component {
     }));
   };
 
+  set editedIndex(idx) {
+    this.setState({ editedIndex: idx });
+  }
+
+  set showContactEditor(show) {
+    this.setState({ showEditor: show });
+  }
+
   handleAddContactClick = e => {
-    this.setState({ showEditor: true, editedIndex: -1 });
+    this.editedIndex = -1;
+    this.showContactEditor = true;
   };
 
-  handleEditorClose = e => {
-    this.setState({ showEditor: false });
+  handleEditorClose = () => {
+    this.showContactEditor = false;
   };
 
   addContact(data) {
-    this.setState(cur => ({
-      contacts: [...cur.contacts, { ...data, id: getId() }],
-    }));
+    if (this.isContactExists(data)) {
+      return showError(ERR_ALREADY_EXISTS);
+    }
+    this.setState(
+      cur => ({
+        contacts: [...cur.contacts, { ...data, id: getId() }],
+      }),
+      () => showSuccess(MSG_ADDED_SUCCESS)
+    );
+
+    return true;
   }
 
   editContact(index, data) {
@@ -106,29 +146,87 @@ export class App extends Component {
         idx === index ? { ...itm, ...data } : itm
       ),
     }));
+
+    return true;
   }
 
+  toggleContact(id) {
+    this.setState(cur => ({
+      contacts: cur.contacts.map(itm =>
+        itm.id === id ? { ...itm, selected: !itm.selected } : itm
+      ),
+    }));
+  }
+
+  // todo: должен быть синхронизирован со всеми (выделили все)
+  // что с состоянием(?)
+  toggleAllContacts(checked) {
+    this.setState(cur => ({
+      contacts: cur.contacts.map(itm => ({ ...itm, selected: checked })),
+    }));
+  }
+
+  removeContact(id) {
+    this.setState({
+      contacts: this.state.contacts.filter(itm => itm.id !== id),
+    });
+  }
+
+  /**
+   * Добавляет или изменяет заданный контакт
+   * @param {*} data данные полей формы {fieldName: value, ...}
+   */
   handleEditorSubmit = (_, data) => {
     const { editedIndex } = this.state;
-
-    if (editedIndex < 0) this.addContact(data);
-    else this.editContact(editedIndex, data);
-
-    this.handleEditorClose();
+    let success =
+      editedIndex < 0
+        ? this.addContact(data)
+        : this.editContact(editedIndex, data);
+    // закрываем форму только в случае успеха
+    // Актуально, если добавление дубликата не удалось
+    if (success) this.handleEditorClose();
   };
 
+  /**
+   * Закрывает бекдроп при клике на нем
+   */
   handleBackdropClick = e => {
     // ловим только на самом бекдропе
     if (e.currentTarget !== e.target) return;
-    this.setState({ showEditor: false });
+    this.showContactEditor = false;
   };
 
-  getFieldValues = () => {
+  /**
+   * Вернет массив [name, number] редактируемого контакта
+   * Которые впоследствие передаем форме для инициализации полей
+   */
+  getEditedContactData = () => {
     const { editedIndex, contacts } = this.state;
     if (editedIndex < 0) return;
 
     const { name, number } = contacts[editedIndex];
     return [name, number];
+  };
+
+  /**
+   * Проверяет, существует ли контакт с заданным именем/номером
+   * @param {*} data - {name, number}
+   */
+  isContactExists(data) {
+    const { name, number } = data;
+    return !!this.state.contacts.find(
+      itm =>
+        itm.name.toLocaleLowerCase() === name.toLocaleLowerCase() ||
+        itm.number === number
+    );
+  }
+
+  handleCheckAll = ({ target: { checked } }) => {
+    this.toggleAllContacts(checked);
+  };
+
+  handleCheckItem = (_, id) => {
+    this.toggleContact(id);
   };
 
   render() {
@@ -140,8 +238,10 @@ export class App extends Component {
       handleListSort,
       handleEditorClose,
       handleEditorSubmit,
-      getFieldValues,
+      getEditedContactData,
       handleBackdropClick,
+      handleCheckAll,
+      handleCheckItem,
     } = this;
 
     return (
@@ -149,21 +249,20 @@ export class App extends Component {
         <Backdrop hidden={!showEditor} onClick={handleBackdropClick}>
           {showEditor && (
             <ContactEditor
-              width={500}
               title={editedIndex < 0 ? EDITOR_TITLE_ADD : EDITOR_TITLE_EDIT}
               onClose={handleEditorClose}
               onSubmit={handleEditorSubmit}
-              fieldValues={getFieldValues()}
+              fieldValues={getEditedContactData()}
               autoComplete="off"
             />
           )}
         </Backdrop>
 
         <Header>
-          <h1>
+          <Logo>
             <IconContactsBook size={22} color="var(--color-accent)" />
             PhoneBook
-          </h1>
+          </Logo>
           <ButtonPrimary
             type="button"
             name="addContact"
@@ -190,6 +289,8 @@ export class App extends Component {
               controlsHeight="20px"
               onControlClick={handleControlClick}
               onListSort={handleListSort}
+              onCheckAll={handleCheckAll}
+              onCheckItem={handleCheckItem}
             />
           </Block>
         )}

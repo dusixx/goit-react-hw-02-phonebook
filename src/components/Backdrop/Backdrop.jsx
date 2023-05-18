@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import ScrollToggler from 'components/utils/scrollToggler';
 
 const def = {
   bgColor: 'rgb(0 0 0 / 0.5)',
@@ -31,8 +32,14 @@ export const Container = styled.div`
   }
 `;
 
-export const Backdrop = ({ children, hidden, onClick }) => (
-  <Container data-hidden={hidden} onClick={onClick}>
-    {children}
-  </Container>
-);
+const scroll = new ScrollToggler();
+
+export const Backdrop = ({ children, hidden, onClick }) => {
+  scroll[hidden ? 'enable' : 'disable']();
+
+  return (
+    <Container data-hidden={hidden} onClick={onClick}>
+      {children}
+    </Container>
+  );
+};

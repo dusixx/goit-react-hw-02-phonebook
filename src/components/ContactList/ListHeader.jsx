@@ -10,6 +10,7 @@ import { HeaderBtn } from './HeaderBtn';
 export class ListHeader extends Component {
   static propTypes = {
     onListSort: PropTypes.func,
+    onListCheckAll: PropTypes.func,
     itemHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
@@ -42,16 +43,25 @@ export class ListHeader extends Component {
   // };
 
   render() {
+    const { itemHeight, onCheckAll, items } = this.props;
+    const { name, number } = this.state.sort;
+
     return (
-      <TableHeader itemHeight={this.props.itemHeight}>
-        <tr onBlur={this.handleBlur}>
+      <TableHeader itemHeight={itemHeight}>
+        <tr /* onBlur={this.handleBlur} */>
           <th>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              onChange={onCheckAll}
+              // todo: фактически повторный перебор массива
+              // (1-ый - это map в ContactList)
+              checked={items.length && !items.some(({ selected }) => !selected)}
+            />
           </th>
           <th>
             <HeaderBtn
               name="name"
-              sorted={this.state.sort['name']}
+              sorted={name}
               // кидаем имя, чтобы при клике на иконку key был валиден
               // Иначе, e.target.name === undefined
               onClick={e => this.handleListSort(e, 'name')}
@@ -60,7 +70,7 @@ export class ListHeader extends Component {
           <th>
             <HeaderBtn
               name="number"
-              sorted={this.state.sort['number']}
+              sorted={number}
               onClick={e => this.handleListSort(e, 'number')}
             />
           </th>

@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
+import { calcCSSValue } from 'components/utils';
 
 export const Table = styled.table`
-  width: ${({ width }) => width || '100%'};
-  //min-width: 320px;
+  width: ${({ width }) => calcCSSValue(width) || '100%'};
 
   font-family: inherit;
   font-size: 12px;

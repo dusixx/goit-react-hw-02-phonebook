@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { getId, cap } from 'components/utils';
-import { Container, Button } from './Controls.styled';
+import { Container, ControlBtn } from './Controls.styled';
 import { IconCopy, IconDelete, IconEdit } from 'styles/icons';
 
 // порядок контролов слева-направо
@@ -12,14 +12,14 @@ const data = {
 };
 
 const Control = ({ icon: ReactIcon, size, name, onClick, targetId }) => (
-  <Button
+  <ControlBtn
     type="button"
     onClick={() => onClick(targetId, name)}
     name={name}
     title={cap(name)}
   >
     <ReactIcon size={size || '100%'} />
-  </Button>
+  </ControlBtn>
 );
 
 export const Controls = ({ controlsHeight, onControlClick, id }) => (

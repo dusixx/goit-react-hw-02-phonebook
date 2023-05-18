@@ -7,6 +7,8 @@ export const ContactListItem = ({
   name = DEF_CONTACT_NAME,
   number,
   itemHeight,
+  onChange,
+  selected,
   ...restProps
 }) => {
   return (
@@ -14,7 +16,7 @@ export const ContactListItem = ({
       {/* checkbox */}
       <td>
         <div data-checkbox>
-          <input type="checkbox" />
+          <input type="checkbox" onChange={onChange} checked={selected} />
         </div>
       </td>
       {/* sortable */}
