@@ -65,6 +65,7 @@ export const ButtonSecondary = styled(ButtonPrimary)`
 
   &:focus-visible,
   &:hover {
+    background-color: #cccccc;
     filter: brightness(0.9);
   }
 `;
