@@ -18,14 +18,13 @@ import {
 // Constants
 //
 
-const EDITOR_TITLE_ADD = 'Add contact';
-const EDITOR_TITLE_EDIT = 'Edit contact';
-const MSG_NO_CONTACTS = "You don't have any contacts yet";
-const ERR_ALREADY_EXISTS = `The contact with the same name or number already exists`;
-const ERR_ACCESS_DENIED =
-  'You do not have permission to perform this operation';
+const EDITOR_TITLE_ADD = `Add contact`;
+const EDITOR_TITLE_EDIT = `Edit contact`;
+const MSG_NO_CONTACTS = `You don't have any contacts yet`;
 const MSG_COPIED_SUCCESS = `The contact was copied to the clipboard`;
 const MSG_ADDED_SUCCESS = `The contact was added successfully`;
+const ERR_ALREADY_EXISTS = `The contact with the same name or number already exists`;
+const ERR_ACCESS_DENIED = `You do not have permission to perform this operation`;
 
 //
 // App
