@@ -292,6 +292,7 @@ export class App extends Component {
 
     return (
       <Container>
+        {/* Contact editor */}
         <Backdrop hidden={!showEditor} onClick={handleBackdropClick}>
           {showEditor && (
             <ContactEditor
@@ -304,6 +305,7 @@ export class App extends Component {
           )}
         </Backdrop>
 
+        {/* App header */}
         <Header>
           <Logo>
             <IconContactsBook size={22} color="var(--color-accent)" />
@@ -324,6 +326,7 @@ export class App extends Component {
           </ButtonGroup>
         </Header>
 
+        {/* Filter */}
         <Block marginBottom={20} marginTop={15}>
           <Filter
             value={filter}
@@ -332,6 +335,7 @@ export class App extends Component {
           />
         </Block>
 
+        {/* Contact list */}
         {!!contacts.length && (
           <Block maxHeight="70vh">
             <ContactList
@@ -347,6 +351,7 @@ export class App extends Component {
           </Block>
         )}
 
+        {/* Notification */}
         {!contacts.length && (
           <NoContacts>
             {MSG_NO_CONTACTS}
