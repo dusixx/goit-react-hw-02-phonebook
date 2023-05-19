@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, ClearBtn } from './Comps';
-
 import {
   Field,
   InputWrapper,
@@ -23,6 +22,14 @@ export class TextField extends Component {
     name: PropTypes.string,
     type: PropTypes.string,
     pattern: PropTypes.instanceOf(RegExp),
+    required: PropTypes.func,
+    validationMsg: PropTypes.string,
+    validationMsgColor: PropTypes.string,
+    icon: PropTypes.func,
+    iconColor: PropTypes.string,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
   state = { isValid: true, canShowValidationMsg: false };
@@ -41,6 +48,13 @@ export class TextField extends Component {
     this.forceUpdate();
   }
 
+  isValid(value) {
+    const { pattern = DEF_PATTERN, required = false } = this.props;
+    // даже если поле необязательное, но значение введено -
+    // проверяем соотвествие паттерну
+    return value ? pattern.test(value) : !required;
+  }
+
   handleChange = (e, name) => {
     // (e === null) при клике на clearBtn
     const value = e?.target?.value || '';
@@ -50,13 +64,6 @@ export class TextField extends Component {
     this.setState({ isValid });
     onChange && onChange(e, { name, value, isValid });
   };
-
-  isValid(value) {
-    const { pattern = DEF_PATTERN, required = false } = this.props;
-    // даже если поле необязательное, но значение введено -
-    // проверяем соотвествие паттерну
-    return value ? pattern.test(value) : !required;
-  }
 
   handleBlur = e => {
     // разрешаем показывать сообщение для поля,
@@ -98,7 +105,7 @@ export class TextField extends Component {
     const showValidationMsg = canShowValidationMsg && !isValid && validationMsg;
 
     return (
-      // note: если сюда прокинуть весь restProps, и задать, например, для TextField
+      // NOTE: если сюда прокинуть весь restProps, и задать, например, для TextField
       // style = {{ border: 1px solid gray}} - рамка будет тут и на Input ниже
       // Надо уточнять пропсы для потомков
       <Field

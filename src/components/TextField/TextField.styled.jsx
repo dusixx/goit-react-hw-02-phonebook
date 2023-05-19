@@ -15,8 +15,8 @@ const def = {
   paddingSide: 12,
 };
 
-const fieldWidth = ({ width }) => width || def.width;
-const fieldHeight = ({ height }) => height || def.height;
+const fieldWidth = ({ width }) => calcCSSValue(width) || def.width;
+const fieldHeight = ({ height }) => calcCSSValue(height) || def.height;
 const fontSize = ({ inputHeight }) => `${inputHeight * 0.35}px`;
 
 const validationFontSize = ({ inputHeight }) =>
@@ -40,8 +40,9 @@ const paddingRight = ({ inputHeight }) =>
 export const Field = styled.label`
   display: flex;
   flex-direction: column;
+
   width: ${fieldWidth};
-  /* height: ${fieldHeight}; */
+  height: ${fieldHeight};
 `;
 
 export const InputWrapper = styled.div`
@@ -49,7 +50,6 @@ export const InputWrapper = styled.div`
   ${FlexCentered(`justify-content: auto`)};
 
   height: ${fieldHeight};
-  /* height: 100%; */
   width: 100%;
   color: ${def.iconColor};
 `;

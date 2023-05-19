@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { TableHeader, HeaderControls, DeleteBtn } from './ListHeader.styled';
+import PropTypes from 'prop-types';
 import { HeaderCaption } from './HeaderCaption';
+import { TableHeader, HeaderControls, DeleteBtn } from './ListHeader.styled';
 
 //
 // List header

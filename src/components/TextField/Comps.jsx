@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VscClose as IconClose } from 'react-icons/vsc';
+import { IconClose } from 'styles/icons';
 import { IconWrapper, ClearInputBtn } from './TextField.styled';
+
+//
+// Icon
+//
 
 export const Icon = React.forwardRef(
   ({ value: ReactIcon, size, color, iconWidth }, ref) => {
@@ -18,7 +22,14 @@ export const Icon = React.forwardRef(
 Icon.propTypes = {
   value: PropTypes.func,
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
+  // вычисляемое
+  iconWidth: PropTypes.number.isRequired,
 };
+
+//
+// Clear btn
+//
 
 export const ClearBtn = ({ onClick, inputHeight }) => {
   return (
@@ -30,4 +41,6 @@ export const ClearBtn = ({ onClick, inputHeight }) => {
 
 ClearBtn.propTypes = {
   onClick: PropTypes.func,
+  // вычисляемое
+  inputHeight: PropTypes.number.isRequired,
 };

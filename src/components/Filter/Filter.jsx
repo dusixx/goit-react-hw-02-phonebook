@@ -1,9 +1,9 @@
-import { BiSearch } from 'react-icons/bi';
-import { TextField } from 'components/TextField/TextField';
+import { IconSearch } from 'styles/icons';
+import { TextField } from 'components/TextField';
 
 export const Filter = props => (
   <TextField
-    icon={BiSearch}
+    icon={IconSearch}
     name="filter"
     label="Search"
     autoComplete="off"

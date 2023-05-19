@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { TextField } from 'components/TextField/TextField';
+import PropTypes from 'prop-types';
+import { TextField } from 'components/TextField';
 import { IconClose } from 'styles/icons';
 import { Form, CloseBtn, Title, SaveBtn } from './ContactEditor.styled';
 import { fieldData, initialState } from './fieldData';
-import PropTypes from 'prop-types';
 
 //
 // Contact editor
@@ -21,7 +21,7 @@ export class ContactEditor extends Component {
     this.formRef = React.createRef();
   }
 
-  // fieldName: {value: string, isValid: bool}
+  // state = { fieldName: {value: string, isValid: bool}, ... }
   state = initialState;
 
   componentDidMount() {
@@ -32,6 +32,10 @@ export class ContactEditor extends Component {
     // (вероятно, не самый корректный способ)
     this.forceUpdate();
   }
+
+  //
+  // Helpers
+  //
 
   // ставит начальные значения для полей,
   // заданные в пропсе fieldValues массивом[fieldValue1, fieldValue2, ...]
@@ -53,13 +57,18 @@ export class ContactEditor extends Component {
     }, {});
   }
 
+  // проверяет валидны ли все поля
+  isFormDataValid = () => {
+    return !Object.values(this.state).some(({ isValid }) => !isValid);
+  };
+
   resetForm() {
     this.setState(initialState);
   }
 
-  // проверяет валидны ли все поля
-  isFormDataValid = () =>
-    !Object.values(this.state).some(({ isValid }) => !isValid);
+  //
+  // Hendlers
+  //
 
   handleInputChange = (e, { name, value, isValid }) => {
     this.setState(cur => ({
