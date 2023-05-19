@@ -27,7 +27,6 @@ const ERR_ACCESS_DENIED =
 const MSG_COPIED_SUCCESS = `The contact was copied to the clipboard`;
 const MSG_ADDED_SUCCESS = `The contact was added successfully`;
 // const MSG_DELETED_SUCCESS = `The contact was deleted`;
-// const MSG_SEL_DELETED_SUCCESS = 'Selected contacts have been deleted';
 
 //
 // App
@@ -70,6 +69,32 @@ export class App extends Component {
       : contacts;
   };
 
+  // TODO: возможно лучше добавить свойство filtered каждому контакту
+  // и упростить (*) и (**). А при фильтрации
+  // ставить selected: false для контактов, у которых filtered: false
+
+  toggleFiltered(checked) {
+    const filteredContacts = this.getFilteredContacts(); // (*)
+
+    this.setState(cur => ({
+      contacts: cur.contacts.map(itm => {
+        const filtered = filteredContacts.find(({ id }) => itm.id === id);
+        return { ...itm, selected: filtered && checked };
+      }),
+    }));
+  }
+
+  deleteSelectedInFiltered() {
+    const filteredContacts = this.getFilteredContacts(); // (**)
+
+    this.setState(cur => ({
+      contacts: cur.contacts.filter(itm => {
+        const filtered = filteredContacts.find(({ id }) => itm.id === id);
+        return !filtered || !itm.selected;
+      }),
+    }));
+  }
+
   addContact(data) {
     this.setState(
       cur => ({
@@ -99,31 +124,10 @@ export class App extends Component {
     }));
   }
 
-  toggleFilteredContacts(checked) {
-    const filtered = this.getFilteredContacts();
-
-    // выделяем только видимые (отфильтрованные) контакты
-    // NOTE: возможно, не самый оптимальный вариант
-    // Можно добавить каждому контакту свойство filtered
-    this.setState(cur => ({
-      contacts: cur.contacts.map(itm =>
-        filtered.find(({ id }) => itm.id === id)
-          ? { ...itm, selected: checked }
-          : itm
-      ),
-    }));
-  }
-
   deleteContact(id) {
     this.setState({
       contacts: this.state.contacts.filter(itm => itm.id !== id),
     });
-  }
-
-  deleteSelected() {
-    this.setState(cur => ({
-      contacts: cur.contacts.filter(({ selected }) => !selected),
-    }));
   }
 
   /**
@@ -222,8 +226,7 @@ export class App extends Component {
   };
 
   handleDeleteSelected = () => {
-    this.deleteSelected();
-    // showSuccess(MSG_SEL_DELETED_SUCCESS);
+    this.deleteSelectedInFiltered();
   };
 
   /**
@@ -253,7 +256,7 @@ export class App extends Component {
   };
 
   handleCheckAll = ({ target: { checked } }) => {
-    this.toggleFilteredContacts(checked);
+    this.toggleFiltered(checked);
   };
 
   handleItemCheck = (e, id) => {
