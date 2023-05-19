@@ -33,33 +33,3 @@ export function formatNumber(v) {
 
 let id = 0;
 export const getId = () => `id-${(id++).toString(16)}`;
-
-// navigator.permissions.query({ name: 'write-on-clipboard' }).then(result => {
-//   if (result.state == 'granted' || result.state == 'prompt') {
-//     alert('Write access granted!');
-//   }
-// });
-
-// async function copyToClipboard(textToCopy) {
-//     if (navigator.clipboard && window.isSecureContext) {
-//         await navigator.clipboard.writeText(textToCopy);
-//     } else {
-//         const textArea = document.createElement("textarea");
-//         textArea.value = textToCopy;
-
-//         // Move textarea out of the viewport so it's not visible
-//         textArea.style.position = "absolute";
-//         textArea.style.left = "-999999px";
-
-//         document.body.prepend(textArea);
-//         textArea.select();
-
-//         try {
-//             document.execCommand('copy');
-//         } catch (error) {
-//             console.error(error);
-//         } finally {
-//             textArea.remove();
-//         }
-//     });
-// }
