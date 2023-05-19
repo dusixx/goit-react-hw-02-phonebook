@@ -49,17 +49,19 @@ export const ButtonPrimary = styled(ButtonBase)`
 
   background-color: var(--color-accent);
   border-radius: var(--border-radius);
-  transition-property: filter;
+  transition-property: background-color;
 
   &:focus-visible,
   &:hover {
-    filter: brightness(1.1);
+    background-color: #296ff0;
+    /* filter: brightness(1.1); */
   }
 `;
 
 export const ButtonSecondary = styled(ButtonPrimary)`
   background-color: #cccccc;
   color: var(--color-black);
+  transition-property: filter;
 
   &:focus-visible,
   &:hover {

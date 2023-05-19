@@ -49,5 +49,5 @@ export const CloseBtn = styled(ButtonBase)`
 `;
 
 export const SaveBtn = styled(ButtonPrimary)`
-  padding: 8px 25px 8px 25px;
+  padding: 9px 25px 9px 25px;
 `;
