@@ -66,6 +66,7 @@ export class ListHeader extends Component {
           <th>
             <input
               type="checkbox"
+              title="Select All"
               onChange={onCheckAll}
               checked={selectedAll}
             />
@@ -73,6 +74,7 @@ export class ListHeader extends Component {
           <th>
             <HeaderCaption
               name="name"
+              title="Sort by Name"
               sorted={name}
               // кидаем имя, чтобы при клике на иконку key был валиден
               // Иначе, e.target.name === undefined
@@ -82,6 +84,7 @@ export class ListHeader extends Component {
           <th>
             <HeaderCaption
               name="number"
+              title="Sort by Number"
               sorted={number}
               onClick={e => this.handleListSort(e, 'number')}
             />
