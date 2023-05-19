@@ -26,7 +26,6 @@ const ERR_ACCESS_DENIED =
   'You do not have permission to perform this operation';
 const MSG_COPIED_SUCCESS = `The contact was copied to the clipboard`;
 const MSG_ADDED_SUCCESS = `The contact was added successfully`;
-// const MSG_DELETED_SUCCESS = `The contact was deleted`;
 
 //
 // App
@@ -184,7 +183,6 @@ export class App extends Component {
 
   handleDeleteContact(id) {
     this.deleteContact(id);
-    // showSuccess(MSG_DELETED_SUCCESS);
   }
 
   handleEditContact(id) {
