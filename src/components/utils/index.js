@@ -1,3 +1,5 @@
+export * from './notify';
+
 export const isStr = v => typeof v === 'string';
 export const isNum = v => !isNaN(v - parseFloat(v));
 export const isNonEmptyArray = v => Array.isArray(v) && v.length;
@@ -31,6 +33,12 @@ export function formatNumber(v) {
 
 let id = 0;
 export const getId = () => `id-${(id++).toString(16)}`;
+
+// navigator.permissions.query({ name: 'write-on-clipboard' }).then(result => {
+//   if (result.state == 'granted' || result.state == 'prompt') {
+//     alert('Write access granted!');
+//   }
+// });
 
 // async function copyToClipboard(textToCopy) {
 //     if (navigator.clipboard && window.isSecureContext) {

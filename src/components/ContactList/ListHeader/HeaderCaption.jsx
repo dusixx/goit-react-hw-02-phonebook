@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { IconSortAz, IconSortZa } from 'styles/icons';
-import { Button } from './HeaderBtn.styled';
+import { Button } from './HeaderCaption.styled';
 
 const ICON_SIZE = 14;
 
-export const HeaderBtn = ({ name, onClick, sorted }) => {
+export const HeaderCaption = ({ name, onClick, sorted }) => {
   // asc(true), desc(false), none(null)
   const Icon = sorted != null ? (sorted ? IconSortAz : IconSortZa) : null;
 
@@ -16,7 +16,7 @@ export const HeaderBtn = ({ name, onClick, sorted }) => {
   );
 };
 
-HeaderBtn.propTypes = {
+HeaderCaption.propTypes = {
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   sorted: PropTypes.bool,

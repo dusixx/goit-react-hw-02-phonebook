@@ -37,3 +37,7 @@ export const NoContacts = styled.p`
     color: var(--color-accent);
   }
 `;
+
+export const ButtonGroup = styled.div`
+  ${FlexCentered('gap: 15px')};
+`;

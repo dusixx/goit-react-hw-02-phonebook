@@ -40,7 +40,7 @@ export function showSuccess(v, opts) {
   return Notify.success(msg, { showOnlyTheLastOne: true, ...opts });
 }
 
-// export function showWarn(v, opts) {
-//   const msg = v?.message || v;
-//   return Notify.warning(msg, opts);
-// }
+export function showWarn(v, opts) {
+  const msg = v?.message || v;
+  return Notify.warning(msg, { showOnlyTheLastOne: true, ...opts });
+}

@@ -1,14 +1,14 @@
-import { TableRow } from './ContactListItem.styled';
+import { TableRow } from './ListItem.styled';
 import { Controls } from './Controls';
 
 const DEF_CONTACT_NAME = '(noname)';
 
-export const ContactListItem = ({
+export const ListItem = ({
   name = DEF_CONTACT_NAME,
   number,
   itemHeight,
   onChange,
-  selected,
+  checked,
   ...restProps
 }) => {
   return (
@@ -16,7 +16,7 @@ export const ContactListItem = ({
       {/* checkbox */}
       <td>
         <div data-checkbox>
-          <input type="checkbox" onChange={onChange} checked={selected} />
+          <input type="checkbox" onChange={onChange} checked={checked} />
         </div>
       </td>
       {/* sortable */}

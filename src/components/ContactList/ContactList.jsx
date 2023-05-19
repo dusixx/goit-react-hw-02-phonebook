@@ -1,33 +1,27 @@
 import PropTypes from 'prop-types';
-import { ContactListItem } from './ContactListItem';
+import { ListItem } from './ListItem';
 import { ListHeader } from './ListHeader';
 import { Table } from './ContactList.styled';
 
-const ListContent = ({ items, onCheckItem, ...restProps }) => {
-  return (
-    <tbody>
-      {items.map(({ id, name, number, selected }) => {
-        return (
-          <ContactListItem
-            key={id}
-            id={id}
-            name={name}
-            number={number}
-            selected={selected}
-            onChange={e => onCheckItem(e, id)}
-            {...restProps}
-          />
-        );
-      })}
-    </tbody>
-  );
-};
-
-export const ContactList = ({ value = [], width, sort, ...restProps }) => {
+export const ContactList = ({ value, width, onItemCheck, ...restProps }) => {
   return (
     <Table width={width}>
       <ListHeader items={value} {...restProps} />
-      <ListContent items={value} {...restProps} />
+      <tbody>
+        {value.map(({ id, name, number, selected = false }) => {
+          return (
+            <ListItem
+              key={id}
+              id={id}
+              name={name}
+              number={number}
+              checked={selected}
+              onChange={e => onItemCheck(e, id)}
+              {...restProps}
+            />
+          );
+        })}
+      </tbody>
     </Table>
   );
 };

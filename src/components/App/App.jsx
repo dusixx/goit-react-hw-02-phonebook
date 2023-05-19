@@ -1,14 +1,18 @@
 import { Component } from 'react';
-import { IconContactsBook, IconSmileSad, IconUserPlus } from 'styles/icons';
-import { ContactList } from 'components/ContactList/ContactList';
-import { Container, Header, NoContacts, Logo } from './App.styled';
-import { Backdrop } from 'components/Backdrop/Backdrop';
+import { ContactEditor } from 'components/ContactEditor';
+import { Filter } from 'components/Filter';
+import { Backdrop } from 'components/Backdrop';
+import { ContactList } from 'components/ContactList';
+import { getId, showError, showSuccess } from 'components/utils';
 import { contacts as initialContacts } from '../../data/contacts';
-import { ButtonPrimary, Block } from 'styles/shared';
-import { ContactEditor } from 'components/ContactEditor/ContactEditor';
-import { Filter } from 'components/ContactList/Filter';
-import { getId } from 'components/utils';
-import { showError, showSuccess } from 'components/utils/notify';
+import { Container, Header, NoContacts, Logo, ButtonGroup } from './App.styled';
+import { ButtonPrimary, Block, ButtonSecondary } from 'styles/shared';
+import {
+  IconContactsBook,
+  IconSmileSad,
+  IconUserPlus,
+  IconRefresh,
+} from 'styles/icons';
 
 //
 // Constants
@@ -18,9 +22,12 @@ const EDITOR_TITLE_ADD = 'Add contact';
 const EDITOR_TITLE_EDIT = 'Edit contact';
 const MSG_NO_CONTACTS = "You don't have any contacts yet";
 const ERR_ALREADY_EXISTS = `The contact with the same name or number already exists`;
+const ERR_ACCESS_DENIED =
+  'You do not have permission to perform this operation';
 const MSG_COPIED_SUCCESS = `The contact was copied to the clipboard`;
-const MSG_ADDED_SUCCESS = `The contact was added`;
-const MSG_DELETED_SUCCESS = `The contact was deleted`;
+const MSG_ADDED_SUCCESS = `The contact was added successfully`;
+// const MSG_DELETED_SUCCESS = `The contact was deleted`;
+// const MSG_SEL_DELETED_SUCCESS = 'Selected contacts have been deleted';
 
 //
 // App
@@ -35,16 +42,22 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    // init
     this.handleListSort(null, 'name', true);
   }
 
-  // e == null при клике на кнопку очистки
-  handleFilterChange = (e, { name }) => {
-    this.setState({ [name]: e?.target.value || '' });
-  };
+  set editedIndex(idx) {
+    this.setState({ editedIndex: idx });
+  }
 
-  filterContacts() {
+  set showContactEditor(show) {
+    this.setState({ showEditor: show });
+  }
+
+  //
+  // Helpers
+  //
+
+  getFilteredContacts = () => {
     const { filter, contacts } = this.state;
     const searchStr = filter.trim().toLocaleLowerCase();
 
@@ -55,81 +68,9 @@ export class App extends Component {
             number.includes(searchStr)
         )
       : contacts;
-  }
-
-  handleControlClick = (id, name) => {
-    switch (name) {
-      case 'delete':
-        return this.handleRemoveContact(id);
-      case 'edit':
-        return this.handleEditContact(id);
-      case 'copy':
-        return this.handleCopyContactToClipboard(id);
-      default:
-    }
-  };
-
-  handleRemoveContact(id) {
-    this.removeContact(id);
-    showSuccess(MSG_DELETED_SUCCESS);
-  }
-
-  handleEditContact(id) {
-    const idx = this.state.contacts.findIndex(itm => itm.id === id);
-    this.editedIndex = idx;
-    this.showContactEditor = true;
-  }
-
-  async handleCopyContactToClipboard(id) {
-    const target = this.state.contacts.find(itm => itm.id === id);
-
-    if (target) {
-      // для мобильных устройств вероятно не сработает
-      if (navigator.clipboard && isSecureContext) {
-        await navigator.clipboard.writeText(JSON.stringify(target));
-        showSuccess(MSG_COPIED_SUCCESS);
-      } else {
-        showError('Access is denied');
-      }
-    }
-  }
-
-  /**
-   * Сортирует список контактов по заданному полю
-   * @param {*} key - поле (name|number)
-   * @param {*} ascending - порядок сортировки
-   */
-  handleListSort = (_, key, ascending) => {
-    this.setState(cur => ({
-      contacts: [...cur.contacts].sort(
-        ascending
-          ? (a, b) => a[key].localeCompare(b[key])
-          : (a, b) => b[key].localeCompare(a[key])
-      ),
-    }));
-  };
-
-  set editedIndex(idx) {
-    this.setState({ editedIndex: idx });
-  }
-
-  set showContactEditor(show) {
-    this.setState({ showEditor: show });
-  }
-
-  handleAddContactClick = e => {
-    this.editedIndex = -1;
-    this.showContactEditor = true;
-  };
-
-  handleEditorClose = () => {
-    this.showContactEditor = false;
   };
 
   addContact(data) {
-    if (this.isContactExists(data)) {
-      return showError(ERR_ALREADY_EXISTS);
-    }
     this.setState(
       cur => ({
         contacts: [...cur.contacts, { ...data, id: getId() }],
@@ -158,43 +99,23 @@ export class App extends Component {
     }));
   }
 
-  // todo: должен быть синхронизирован со всеми (выделили все)
-  // что с состоянием(?)
   toggleAllContacts(checked) {
     this.setState(cur => ({
       contacts: cur.contacts.map(itm => ({ ...itm, selected: checked })),
     }));
   }
 
-  removeContact(id) {
+  deleteContact(id) {
     this.setState({
       contacts: this.state.contacts.filter(itm => itm.id !== id),
     });
   }
 
-  /**
-   * Добавляет или изменяет заданный контакт
-   * @param {*} data данные полей формы {fieldName: value, ...}
-   */
-  handleEditorSubmit = (_, data) => {
-    const { editedIndex } = this.state;
-    let success =
-      editedIndex < 0
-        ? this.addContact(data)
-        : this.editContact(editedIndex, data);
-    // закрываем форму только в случае успеха
-    // Актуально, если добавление дубликата не удалось
-    if (success) this.handleEditorClose();
-  };
-
-  /**
-   * Закрывает бекдроп при клике на нем
-   */
-  handleBackdropClick = e => {
-    // ловим только на самом бекдропе
-    if (e.currentTarget !== e.target) return;
-    this.showContactEditor = false;
-  };
+  deleteSelected() {
+    this.setState(cur => ({
+      contacts: cur.contacts.filter(({ selected }) => !selected),
+    }));
+  }
 
   /**
    * Вернет массив [name, number] редактируемого контакта
@@ -221,27 +142,136 @@ export class App extends Component {
     );
   }
 
+  //
+  // Handlers
+  //
+
+  handleFilterChange = (e, { name }) => {
+    // (e === null) при клике на кнопку очистки
+    this.setState({ [name]: e?.target.value || '' });
+  };
+
+  handleItemControlClick = (id, name) => {
+    switch (name) {
+      case 'delete':
+        return this.handleDeleteContact(id);
+      case 'edit':
+        return this.handleEditContact(id);
+      case 'copy':
+        return this.handleCopyContactToClipboard(id);
+      default:
+    }
+  };
+
+  handleDeleteContact(id) {
+    this.deleteContact(id);
+    // showSuccess(MSG_DELETED_SUCCESS);
+  }
+
+  handleEditContact(id) {
+    const idx = this.state.contacts.findIndex(itm => itm.id === id);
+    this.editedIndex = idx;
+    this.showContactEditor = true;
+  }
+
+  async handleCopyContactToClipboard(id) {
+    const target = this.state.contacts.find(itm => itm.id === id);
+
+    if (target) {
+      // NOTE: для мобильных устройств не работает
+      if (navigator.clipboard && isSecureContext) {
+        await navigator.clipboard.writeText(JSON.stringify(target));
+        showSuccess(MSG_COPIED_SUCCESS);
+      } else {
+        showError(ERR_ACCESS_DENIED);
+      }
+    }
+  }
+
+  /**
+   * Сортирует список контактов по заданному полю
+   * @param {*} key - поле (name|number)
+   * @param {*} ascending - порядок сортировки
+   */
+  handleListSort = (_, key, ascending) => {
+    this.setState(cur => ({
+      contacts: [...cur.contacts].sort(
+        ascending
+          ? (a, b) => a[key].localeCompare(b[key])
+          : (a, b) => b[key].localeCompare(a[key])
+      ),
+    }));
+  };
+
+  handleAddContactClick = e => {
+    this.editedIndex = -1;
+    this.showContactEditor = true;
+  };
+
+  handleEditorClose = () => {
+    this.showContactEditor = false;
+  };
+
+  handleDeleteSelected = () => {
+    this.deleteSelected();
+    // showSuccess(MSG_SEL_DELETED_SUCCESS);
+  };
+
+  /**
+   * Добавляет или изменяет заданный контакт
+   * @param {*} data данные полей формы {fieldName: value, ...}
+   */
+  handleEditorSubmit = (_, data) => {
+    const { editedIndex } = this.state;
+
+    if (editedIndex < 0 && this.isContactExists(data)) {
+      return showError(ERR_ALREADY_EXISTS);
+    }
+
+    let success =
+      editedIndex < 0
+        ? this.addContact(data)
+        : this.editContact(editedIndex, data);
+    // закрываем форму только в случае успеха
+    // Актуально, если добавление дубликата не удалось
+    this.showContactEditor = !success;
+  };
+
+  handleBackdropClick = e => {
+    // ловим только на самом бекдропе
+    if (e.currentTarget !== e.target) return;
+    this.showContactEditor = false;
+  };
+
   handleCheckAll = ({ target: { checked } }) => {
     this.toggleAllContacts(checked);
   };
 
-  handleCheckItem = (_, id) => {
+  handleItemCheck = (e, id) => {
     this.toggleContact(id);
+  };
+
+  handleResetClick = () => {
+    this.setState({ contacts: initialContacts });
+    this.handleListSort(null, 'name', true);
   };
 
   render() {
     const { contacts, filter, showEditor, editedIndex } = this.state;
     const {
+      getEditedContactData,
+      getFilteredContacts,
       handleAddContactClick,
       handleFilterChange,
-      handleControlClick,
+      handleItemControlClick,
       handleListSort,
       handleEditorClose,
       handleEditorSubmit,
-      getEditedContactData,
       handleBackdropClick,
       handleCheckAll,
-      handleCheckItem,
+      handleItemCheck,
+      handleDeleteSelected,
+      handleResetClick,
     } = this;
 
     return (
@@ -263,17 +293,22 @@ export class App extends Component {
             <IconContactsBook size={22} color="var(--color-accent)" />
             PhoneBook
           </Logo>
-          <ButtonPrimary
-            type="button"
-            name="addContact"
-            onClick={handleAddContactClick}
-          >
-            <IconUserPlus size={20} />
-            Add
-          </ButtonPrimary>
+          <ButtonGroup>
+            <ButtonPrimary
+              type="button"
+              title="Add contact"
+              onClick={handleAddContactClick}
+            >
+              <IconUserPlus size={20} />
+              Add
+            </ButtonPrimary>
+            <ButtonSecondary title="Reset" onClick={handleResetClick}>
+              <IconRefresh size={20} />
+            </ButtonSecondary>
+          </ButtonGroup>
         </Header>
 
-        <Block marginBottom="20px" marginTop="15px">
+        <Block marginBottom={20} marginTop={15}>
           <Filter
             value={filter}
             onChange={handleFilterChange}
@@ -284,13 +319,14 @@ export class App extends Component {
         {!!contacts.length && (
           <Block maxHeight="70vh">
             <ContactList
-              value={this.filterContacts()}
-              itemHeight="50px"
-              controlsHeight="20px"
-              onControlClick={handleControlClick}
+              value={getFilteredContacts()}
+              itemHeight={50}
+              controlsHeight={20}
+              onControlClick={handleItemControlClick}
               onListSort={handleListSort}
               onCheckAll={handleCheckAll}
-              onCheckItem={handleCheckItem}
+              onItemCheck={handleItemCheck}
+              onSelectedDelete={handleDeleteSelected}
             />
           </Block>
         )}

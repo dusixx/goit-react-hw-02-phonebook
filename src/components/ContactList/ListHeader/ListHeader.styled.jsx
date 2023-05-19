@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
-import { ButtonBase, FlexCentered } from '../../styles/shared';
+import { calcCSSValue } from 'components/utils';
+import { ButtonBase, FlexCentered } from '../../../styles/shared';
 
 const HEIGHT_MULT = 1;
 
 export const TableHeader = styled.thead`
-  height: ${({ itemHeight }) => `calc(${itemHeight} * ${HEIGHT_MULT})`};
+  height: ${({ itemHeight }) =>
+    `calc(${calcCSSValue(itemHeight)} * ${HEIGHT_MULT})`};
 
   font-size: 14px;
   font-weight: 600;

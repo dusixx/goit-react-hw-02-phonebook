@@ -1,5 +1,5 @@
 import { CgSortAz, CgSortZa } from 'react-icons/cg';
-import { BiSearch, BiUserPlus, BiPhone } from 'react-icons/bi';
+import { BiSearch, BiUserPlus, BiPhone, BiRefresh } from 'react-icons/bi';
 import { MdOutlineEdit, MdDeleteOutline, MdCopyAll } from 'react-icons/md';
 import { VscClose } from 'react-icons/vsc';
 import { RiContactsBook2Fill, RiEmotionSadLine } from 'react-icons/ri';
@@ -17,3 +17,4 @@ export const IconContactsBook = RiContactsBook2Fill;
 export const IconSmileSad = RiEmotionSadLine;
 export const IconUser = AiOutlineUser;
 export const IconPhone = BiPhone;
+export const IconRefresh = BiRefresh;

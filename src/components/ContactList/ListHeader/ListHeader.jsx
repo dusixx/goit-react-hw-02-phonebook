@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { TableHeader, HeaderControls, DeleteBtn } from './ListHeader.styled';
-import { HeaderBtn } from './HeaderBtn';
+import { HeaderCaption } from './HeaderCaption';
 
 //
 // List header
@@ -10,7 +10,8 @@ import { HeaderBtn } from './HeaderBtn';
 export class ListHeader extends Component {
   static propTypes = {
     onListSort: PropTypes.func,
-    onListCheckAll: PropTypes.func,
+    onCheckAll: PropTypes.func,
+    onSelectedDelete: PropTypes.func,
     itemHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
@@ -21,30 +22,43 @@ export class ListHeader extends Component {
     },
   };
 
-  activateHeaderBtn = name =>
-    Object.entries(this.state.sort).reduce((res, [key, value]) => {
-      res[key] = key === name ? !value : null;
+  getSelectedCount(items) {
+    // NOTE: повторный перебор массива (1-ый - map в ContactList)
+    // взять бы как-то оттуда кол-во selected
+    return items.reduce((res, { selected = false }) => {
+      res += Number(selected);
       return res;
-    }, {});
+    }, 0);
+  }
 
   handleListSort = (e, key) => {
     const { onListSort } = this.props;
 
+    const activateHeaderBtn = name =>
+      Object.entries(this.state.sort).reduce((res, [key, value]) => {
+        res[key] = key === name ? !value : null;
+        return res;
+      }, {});
+
     // убираем иконку сортировки с остальных
     // Без колбека (*) получим старое значение
     this.setState(
-      { sort: this.activateHeaderBtn(key) },
+      { sort: activateHeaderBtn(key) },
       () => onListSort && onListSort(e, key, this.state.sort[key]) // (*)
     );
   };
 
+  // TODO: убирать маркер сортировки при потере фокуса хедером
   // handleBlur = e => {
   //   this.setState(cur => ({ sort: { name: null, number: null } }));
   // };
 
   render() {
-    const { itemHeight, onCheckAll, items } = this.props;
+    const { itemHeight, onCheckAll, onSelectedDelete, items } = this.props;
     const { name, number } = this.state.sort;
+
+    const selectedCount = this.getSelectedCount(items);
+    const selectedAll = selectedCount && selectedCount === items.length;
 
     return (
       <TableHeader itemHeight={itemHeight}>
@@ -53,13 +67,11 @@ export class ListHeader extends Component {
             <input
               type="checkbox"
               onChange={onCheckAll}
-              // todo: фактически повторный перебор массива
-              // (1-ый - это map в ContactList)
-              checked={items.length && !items.some(({ selected }) => !selected)}
+              checked={selectedAll}
             />
           </th>
           <th>
-            <HeaderBtn
+            <HeaderCaption
               name="name"
               sorted={name}
               // кидаем имя, чтобы при клике на иконку key был валиден
@@ -68,7 +80,7 @@ export class ListHeader extends Component {
             />
           </th>
           <th>
-            <HeaderBtn
+            <HeaderCaption
               name="number"
               sorted={number}
               onClick={e => this.handleListSort(e, 'number')}
@@ -76,7 +88,12 @@ export class ListHeader extends Component {
           </th>
           <th>
             <HeaderControls>
-              <DeleteBtn type="button" title="Remove selected">
+              <DeleteBtn
+                type="button"
+                title="Delete selected"
+                disabled={!selectedCount}
+                onClick={onSelectedDelete}
+              >
                 Delete
               </DeleteBtn>
             </HeaderControls>

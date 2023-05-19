@@ -1,5 +1,8 @@
 import './scrollOff.css';
 
+// TODO: переписать под React и ставить overflow-y в зависимости от того,
+// есть ли на боди вертикальная полоса прокуртки (есть - ставим)
+
 const root = document.documentElement;
 const body = document.body;
 
