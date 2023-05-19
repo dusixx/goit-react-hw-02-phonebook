@@ -155,6 +155,12 @@ export class App extends Component {
     );
   }
 
+  formatNumber(number) {
+    return number
+      .replace(/[\s-]/g, '')
+      .replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3');
+  }
+
   //
   // Handlers
   //
@@ -235,12 +241,7 @@ export class App extends Component {
    */
   handleEditorSubmit = (_, { name, number }) => {
     const { editedIndex } = this.state;
-    const data = {
-      name,
-      number: number
-        .replace(/[\s-]/g, '')
-        .replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3'),
-    };
+    const data = { name, number: this.formatNumber(number) };
 
     if (editedIndex < 0 && this.isContactExists(data)) {
       return showError(ERR_ALREADY_EXISTS);
