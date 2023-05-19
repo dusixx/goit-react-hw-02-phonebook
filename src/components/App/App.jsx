@@ -233,8 +233,14 @@ export class App extends Component {
    * Добавляет или изменяет заданный контакт
    * @param {*} data данные полей формы {fieldName: value, ...}
    */
-  handleEditorSubmit = (_, data) => {
+  handleEditorSubmit = (_, { name, number }) => {
     const { editedIndex } = this.state;
+    const data = {
+      name,
+      number: number
+        .replace(/[\s-]/g, '')
+        .replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3'),
+    };
 
     if (editedIndex < 0 && this.isContactExists(data)) {
       return showError(ERR_ALREADY_EXISTS);

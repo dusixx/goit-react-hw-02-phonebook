@@ -20,8 +20,8 @@ export const fieldData = {
   number: {
     type: 'tel',
     icon: IconPhone,
-    pattern: /^\s*\d{3}(-\d{2}){2}\s*$/,
-    validationMsg: 'Required number format: XXX-XX-XX',
+    pattern: /^\s*(\d\s*-*){7}\s*$/,
+    validationMsg: 'Number must be 7 digits',
     required: true,
     initialValue: '',
     title: 'Contact phone number',
