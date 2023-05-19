@@ -22,7 +22,7 @@ export class TextField extends Component {
     name: PropTypes.string,
     type: PropTypes.string,
     pattern: PropTypes.instanceOf(RegExp),
-    required: PropTypes.func,
+    required: PropTypes.bool,
     validationMsg: PropTypes.string,
     validationMsgColor: PropTypes.string,
     icon: PropTypes.func,

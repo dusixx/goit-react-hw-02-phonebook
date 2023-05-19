@@ -23,8 +23,6 @@ Icon.propTypes = {
   value: PropTypes.func,
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   color: PropTypes.string,
-  // вычисляемое
-  iconWidth: PropTypes.number.isRequired,
 };
 
 //
@@ -41,6 +39,4 @@ export const ClearBtn = ({ onClick, inputHeight }) => {
 
 ClearBtn.propTypes = {
   onClick: PropTypes.func,
-  // вычисляемое
-  inputHeight: PropTypes.number.isRequired,
 };

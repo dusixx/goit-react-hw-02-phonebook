@@ -40,9 +40,7 @@ const paddingRight = ({ inputHeight }) =>
 export const Field = styled.label`
   display: flex;
   flex-direction: column;
-
   width: ${fieldWidth};
-  height: ${fieldHeight};
 `;
 
 export const InputWrapper = styled.div`

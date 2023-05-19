@@ -99,9 +99,18 @@ export class App extends Component {
     }));
   }
 
-  toggleAllContacts(checked) {
+  toggleFilteredContacts(checked) {
+    const filtered = this.getFilteredContacts();
+
+    // выделяем только видимые (отфильтрованные) контакты
+    // NOTE: возможно, не самый оптимальный вариант
+    // Можно добавить каждому контакту свойство filtered
     this.setState(cur => ({
-      contacts: cur.contacts.map(itm => ({ ...itm, selected: checked })),
+      contacts: cur.contacts.map(itm =>
+        filtered.find(({ id }) => itm.id === id)
+          ? { ...itm, selected: checked }
+          : itm
+      ),
     }));
   }
 
@@ -244,7 +253,7 @@ export class App extends Component {
   };
 
   handleCheckAll = ({ target: { checked } }) => {
-    this.toggleAllContacts(checked);
+    this.toggleFilteredContacts(checked);
   };
 
   handleItemCheck = (e, id) => {
