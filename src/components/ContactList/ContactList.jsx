@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string, bool, exact, arrayOf } from 'prop-types';
 import { ListItem } from './ListItem';
 import { ListHeader } from './ListHeader';
 import { Table } from './ContactList.styled';
@@ -27,12 +27,12 @@ export const ContactList = ({ value, width, onItemCheck, ...restProps }) => {
 };
 
 ContactList.propTypes = {
-  value: PropTypes.arrayOf(
-    PropTypes.exact({
-      name: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-      selected: PropTypes.bool,
+  value: arrayOf(
+    exact({
+      name: string.isRequired,
+      id: string.isRequired,
+      number: string.isRequired,
+      selected: bool,
     })
   ),
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Icon, ClearBtn } from './Comps';
+import { string, number, func, bool, oneOfType, instanceOf } from 'prop-types';
+import { Icon, ClearBtn } from './comps';
 import {
   Field,
   InputWrapper,
@@ -16,20 +16,24 @@ const DEF_PATTERN = /[\s\S]*/;
 
 export class TextField extends Component {
   static propTypes = {
-    value: PropTypes.string,
-    onChange: PropTypes.func,
-    label: PropTypes.string,
-    name: PropTypes.string,
-    type: PropTypes.string,
-    pattern: PropTypes.instanceOf(RegExp),
-    required: PropTypes.bool,
-    validationMsg: PropTypes.string,
-    validationMsgColor: PropTypes.string,
-    icon: PropTypes.func,
-    iconColor: PropTypes.string,
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    value: string,
+    label: string,
+    name: string,
+    type: string,
+    width: oneOfType([string, number]),
+    height: oneOfType([string, number]),
+    // events
+    onChange: func,
+    onBlur: func,
+    // validation
+    pattern: instanceOf(RegExp),
+    required: bool,
+    validationMsg: string,
+    validationMsgColor: string,
+    // icon
+    icon: func,
+    iconColor: string,
+    iconSize: oneOfType([string, number]),
   };
 
   state = { isValid: true, canShowValidationMsg: false };
@@ -41,6 +45,8 @@ export class TextField extends Component {
   }
 
   componentDidMount() {
+    // вычисляемые значения, на основе которых ставятся параметры поля
+    // такие как: падинги, размер шрифта, отступ иконки от края и тп
     this.iconWidth = this.iconRef.current?.offsetWidth || 0;
     this.inputHeight = this.inputRef.current.offsetHeight;
     // для получения calculated свойств отрендеренных элементов
@@ -48,6 +54,12 @@ export class TextField extends Component {
     this.forceUpdate();
   }
 
+  /**
+   *
+   * Проверяет, валидно ли значение поля
+   * Если поле пустое, проверяет его свойство required
+   * @param {*} value
+   */
   isValid(value) {
     const { pattern = DEF_PATTERN, required = false } = this.props;
     // даже если поле необязательное, но значение введено -

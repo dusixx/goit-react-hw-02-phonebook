@@ -1,53 +1,18 @@
 import styled from '@emotion/styled';
 import { ButtonBase, FlexCentered } from 'styles/shared';
-import { calcCSSValue } from 'components/utils';
-
-//
-// params
-//
-
-const def = {
-  width: '100%',
-  height: '40px',
-  iconColor: '#363636',
-  validationColor: '#d93025',
-  borderColor: '#c4c4c4',
-  paddingSide: 12,
-};
-
-const fieldWidth = ({ width }) => calcCSSValue(width) || def.width;
-const fieldHeight = ({ height }) => calcCSSValue(height) || def.height;
-const fontSize = ({ inputHeight }) => `${inputHeight * 0.35}px`;
-
-const validationFontSize = ({ inputHeight }) =>
-  `${inputHeight * 0.35 * 0.83}px`;
-
-const borderRadius = ({ inputHeight }) => `${inputHeight * 0.2}px`;
-const iconHeight = ({ size }) => `${size ? calcCSSValue(size) : '50%'}`;
-const iconOffset = ({ iconWidth }) => `${iconWidth * 0.5}px`;
-const clearBtnOffset = ({ inputHeight }) => `${inputHeight * 0.2}px`;
-
-const paddingLeft = ({ iconWidth }) =>
-  `${iconWidth ? iconWidth + iconWidth * 0.5 + 5 : def.paddingSide}px`;
-
-const paddingRight = ({ inputHeight }) =>
-  `${inputHeight ? inputHeight * 0.8 : def.paddingSide}px`;
-
-//
-// styles
-//
+import { def, calc } from './params';
 
 export const Field = styled.label`
   display: flex;
   flex-direction: column;
-  width: ${fieldWidth};
+  width: ${calc.fieldWidth};
 `;
 
 export const InputWrapper = styled.div`
   position: relative;
   ${FlexCentered(`justify-content: auto`)};
 
-  height: ${fieldHeight};
+  height: ${calc.fieldHeight};
   width: 100%;
   color: ${def.iconColor};
 `;
@@ -55,16 +20,13 @@ export const InputWrapper = styled.div`
 export const Input = styled.input`
   height: 100%;
   width: 100%;
-
-  padding: 0;
-  padding-left: ${paddingLeft};
-  padding-right: ${paddingRight};
+  padding: 0 ${calc.paddingRight} 0 ${calc.paddingLeft};
 
   font-family: inherit;
-  font-size: ${fontSize};
+  font-size: ${calc.fontSize};
 
   background-color: white;
-  border-radius: ${borderRadius};
+  border-radius: ${calc.borderRadius};
 
   border: 1px solid
     ${({ showValidationMsg }) =>
@@ -88,8 +50,8 @@ export const IconWrapper = styled.span`
 
   position: absolute;
   top: 50%;
-  left: ${iconOffset};
-  height: ${iconHeight};
+  left: ${calc.iconOffset};
+  height: ${calc.iconHeight};
 
   color: currentColor;
   transform: translateY(-50%);
@@ -98,7 +60,7 @@ export const IconWrapper = styled.span`
 export const ClearInputBtn = styled(ButtonBase)`
   position: absolute;
   top: 50%;
-  right: ${clearBtnOffset};
+  right: ${calc.clearBtnOffset};
 
   height: 60%;
   padding: 3px;
@@ -115,8 +77,8 @@ export const ClearInputBtn = styled(ButtonBase)`
 
 export const ValidationMessage = styled.p`
   margin-top: 2px;
-  margin-left: ${borderRadius};
+  margin-left: ${calc.borderRadius};
 
   color: ${({ color }) => color || def.validationColor};
-  font-size: ${validationFontSize};
+  font-size: ${calc.validationFontSize};
 `;

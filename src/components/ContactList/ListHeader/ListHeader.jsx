@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
+import { string, number, func, oneOfType } from 'prop-types';
 import { HeaderCaption } from './HeaderCaption';
 import { TableHeader, HeaderControls, DeleteBtn } from './ListHeader.styled';
 
@@ -9,10 +9,10 @@ import { TableHeader, HeaderControls, DeleteBtn } from './ListHeader.styled';
 
 export class ListHeader extends Component {
   static propTypes = {
-    onListSort: PropTypes.func,
-    onCheckAll: PropTypes.func,
-    onSelectedDelete: PropTypes.func,
-    itemHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onListSort: func,
+    onCheckAll: func,
+    onSelectedDelete: func,
+    itemHeight: oneOfType([string, number]),
   };
 
   state = {

@@ -13,3 +13,6 @@ export const parseCSSValue = v => {
 
 let id = 0;
 export const getId = () => `id-${(id++).toString(16)}`;
+
+export const formatNumber = number =>
+  number.replace(/[\s-]/g, '').replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3');

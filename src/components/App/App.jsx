@@ -3,7 +3,7 @@ import { ContactEditor } from 'components/ContactEditor';
 import { Filter } from 'components/Filter';
 import { Backdrop } from 'components/Backdrop';
 import { ContactList } from 'components/ContactList';
-import { getId, showError, showSuccess } from 'components/utils';
+import { getId, formatNumber, showError, showSuccess } from 'components/utils';
 import { contacts as initialContacts } from '../../data/contacts';
 import { Container, Header, NoContacts, Logo, ButtonGroup } from './App.styled';
 import { ButtonPrimary, Block, ButtonSecondary } from 'styles/shared';
@@ -82,7 +82,7 @@ export class App extends Component {
     }));
   }
 
-  deleteSelectedInFiltered() {
+  deleteFilteredSelected() {
     const filteredContacts = this.getFilteredContacts(); // (**)
 
     this.setState(cur => ({
@@ -93,12 +93,12 @@ export class App extends Component {
     }));
   }
 
-  addContact(data) {
+  addContact(data, callback) {
     this.setState(
       cur => ({
         contacts: [...cur.contacts, { ...data, id: getId() }],
       }),
-      () => showSuccess(MSG_ADDED_SUCCESS)
+      callback
     );
 
     return true;
@@ -129,6 +129,7 @@ export class App extends Component {
   }
 
   /**
+   *
    * Вернет массив [name, number] редактируемого контакта
    * Которые впоследствие передаем форме для инициализации полей
    */
@@ -141,6 +142,7 @@ export class App extends Component {
   };
 
   /**
+   *
    * Проверяет, существует ли контакт с заданным именем/номером
    * @param {*} data - {name, number}
    */
@@ -153,12 +155,6 @@ export class App extends Component {
     );
   }
 
-  formatNumber(number) {
-    return number
-      .replace(/[\s-]/g, '')
-      .replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3');
-  }
-
   //
   // Handlers
   //
@@ -168,10 +164,10 @@ export class App extends Component {
     this.setState({ [name]: e?.target.value || '' });
   };
 
-  handleItemControlClick = (id, name) => {
-    switch (name) {
+  handleItemControlClick = (id, controlName) => {
+    switch (controlName) {
       case 'delete':
-        return this.handleDeleteContact(id);
+        return this.deleteContact(id);
       case 'edit':
         return this.handleEditContact(id);
       case 'copy':
@@ -179,10 +175,6 @@ export class App extends Component {
       default:
     }
   };
-
-  handleDeleteContact(id) {
-    this.deleteContact(id);
-  }
 
   handleEditContact(id) {
     const idx = this.state.contacts.findIndex(itm => itm.id === id);
@@ -194,7 +186,6 @@ export class App extends Component {
     const target = this.state.contacts.find(itm => itm.id === id);
 
     if (target) {
-      // NOTE: для мобильных устройств не работает
       if (navigator.clipboard && isSecureContext) {
         await navigator.clipboard.writeText(JSON.stringify(target));
         showSuccess(MSG_COPIED_SUCCESS);
@@ -205,6 +196,7 @@ export class App extends Component {
   }
 
   /**
+   *
    * Сортирует список контактов по заданному полю
    * @param {*} key - поле (name|number)
    * @param {*} ascending - порядок сортировки
@@ -229,25 +221,26 @@ export class App extends Component {
   };
 
   handleDeleteSelected = () => {
-    this.deleteSelectedInFiltered();
+    this.deleteFilteredSelected();
   };
 
   /**
+   *
    * Добавляет или изменяет заданный контакт
    * @param {*} data данные полей формы {fieldName: value, ...}
    */
-  handleEditorSubmit = (_, { name, number }) => {
+  handleEditorSubmit = (e, { name, number }) => {
     const { editedIndex } = this.state;
-    const data = { name, number: this.formatNumber(number) };
+    const data = { name, number: formatNumber(number) };
+    const isNewContact = editedIndex < 0;
 
-    if (editedIndex < 0 && this.isContactExists(data)) {
+    if (isNewContact && this.isContactExists(data)) {
       return showError(ERR_ALREADY_EXISTS);
     }
 
-    let success =
-      editedIndex < 0
-        ? this.addContact(data)
-        : this.editContact(editedIndex, data);
+    let success = isNewContact
+      ? this.addContact(data, () => showSuccess(MSG_ADDED_SUCCESS))
+      : this.editContact(editedIndex, data);
     // закрываем форму только в случае успеха
     // Актуально, если добавление дубликата не удалось
     this.showContactEditor = !success;

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string, func, bool } from 'prop-types';
 import { IconSortAz, IconSortZa } from 'styles/icons';
 import { Button } from './HeaderCaption.styled';
 
@@ -17,7 +17,7 @@ export const HeaderCaption = ({ name, onClick, sorted, ...restProps }) => {
 };
 
 HeaderCaption.propTypes = {
-  name: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  sorted: PropTypes.bool,
+  name: string.isRequired,
+  onClick: func,
+  sorted: bool,
 };

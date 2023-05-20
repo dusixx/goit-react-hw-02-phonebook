@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string, func } from 'prop-types';
 import { getId, cap } from 'components/utils';
 import { Container, ControlBtn } from './Controls.styled';
 import { IconCopy, IconDelete, IconEdit } from 'styles/icons';
@@ -37,6 +37,6 @@ export const Controls = ({ controlsHeight, onControlClick, id }) => (
 );
 
 Control.propTypes = {
-  icon: PropTypes.func.isRequired,
-  title: PropTypes.string,
+  icon: func.isRequired,
+  title: string,
 };

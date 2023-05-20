@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { string, number, func, oneOfType } from 'prop-types';
 import { TextField } from 'components/TextField';
 import { IconClose } from 'styles/icons';
 import { Form, CloseBtn, Title, SaveBtn } from './ContactEditor.styled';
@@ -11,9 +11,9 @@ import { fieldData, initialState } from './fieldData';
 
 export class ContactEditor extends Component {
   static propTypes = {
-    onClose: PropTypes.func,
-    title: PropTypes.string,
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onClose: func,
+    title: string,
+    width: oneOfType([string, number]),
   };
 
   constructor(props) {
