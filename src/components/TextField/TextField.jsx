@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { string, number, func, bool, oneOfType, instanceOf } from 'prop-types';
-import { Icon, ClearBtn } from './comps';
+import { Icon, ClearBtn } from './Comps';
 import {
   Field,
   InputWrapper,
